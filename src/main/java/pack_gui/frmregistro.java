@@ -367,7 +367,7 @@ public class frmregistro extends javax.swing.JFrame {
 
     String claveEncriptada = encriptar(password);
     
-    // GUARDAR EN LA LISTA ENLAZADA, NO EN EL MAPA
+    // GUARDAR EN LA LISTA ENLAZADA
     pack_logica.Usuario nuevoUsuario = new pack_logica.Usuario(usuarioID, claveEncriptada);
     listaUsuarios.agregar(nuevoUsuario);
     
