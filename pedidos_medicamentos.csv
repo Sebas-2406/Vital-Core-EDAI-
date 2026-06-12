@@ -1,0 +1,3 @@
+ID_PACIENTE,NOMBRE_PACIENTE,MEDICAMENTO,CANTIDAD,FECHA,ESTADO
+k.web_paciente@gestionmedica.gob.ec,K web,Vitamina C,80,25/01/2026,Pendiente
+e.cordova_paciente@gestionmedica.gob.ec,E cordova,Amoxicilina,4,12/06/2026,Pendiente
