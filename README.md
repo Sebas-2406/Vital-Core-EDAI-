@@ -1,7 +1,4 @@
-# Acta de Constitución del Proyecto
-
-## Nombre del Proyecto
-Gestión de Institución Médica “Vital-Core”
+# Gestión de Institución Médica “Vital-Core”
 
 ## Problemática
 Los procesos de registros de pacientes, historial clínico y asignación de citas al manejarse de forma física y descentralizada, generan duplicidad e inconsistencia de datos, lentitud en el proceso de atención, riesgo a pérdida de información y dificultad en la gestión de los servicios.
