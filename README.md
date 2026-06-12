@@ -34,9 +34,3 @@ El proyecto consiste en un programa de escritorio en Java que implemente una int
 ## Integrantes y Roles (RACI)
 * **Estefano Chávez - Desarrollador de lógica (Backend) y Tester:** Encargado de mantener la correcta implementación de las estructuras de datos, así como de realizar pruebas del programa constantemente para verificar posibles errores.
 * **Erick Páez - Desarrollador de GUI (Frontend) y Experto en documentación:** Responsable de diseñar la interfaz gráfica de usuario y la interacción con el mismo. Además, se encargará de documentar los cambios clave o planificaciones del proceso de desarrollo.
-
-## Definición de Stakeholders
-* **Administrador (Gestor de accesos):** Encargado de gestionar los accesos a los distintos módulos mediante claves y configuraciones del sistema, manteniendo la integridad de los datos.
-* **Recepcionista (Socializador):** Usuario operativo encargado de introducir a los nuevos usuarios al sistema, realizando un registro inicial. No poseerá claves propias operativas, su función es crear las credenciales iniciales para los pacientes.
-* **Médicos (Usuario clínico):** Responsable de visualizar citas pendientes, registrar diagnósticos, dar seguimiento médico y modificar el estado de la cita en el sistema.
-* **Pacientes (Usuario operativo):** Usuarios directos que podrán acceder mediante sus credenciales para programar citas de acuerdo con sus requerimientos. Su información permanecerá gestionada de manera segura y confidencial.
