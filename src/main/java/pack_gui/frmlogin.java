@@ -229,10 +229,20 @@ public class frmlogin extends javax.swing.JFrame {
 
         switch (typeUser) {
             case "doctor":
-                JOptionPane.showMessageDialog(this, 
-                    "El acceso al panel de Médicos está temporalmente inactivo.", 
-                    "Módulo Deshabilitado", 
-                    JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Bienvenido, Doctor. Sus consultas del día están listas.");
+                String idMedico = "";
+                try {
+                    String[] partesCorreo = user.split("@")[0].split("_");
+                    if (partesCorreo.length > 0) {
+                        idMedico = partesCorreo[0];
+                    }
+                } catch (Exception e) {
+                    idMedico = "default"; 
+                }
+                frmMedico ventanaMedico = new frmMedico("Dr. " + nombreUsuario, idMedico);
+                ventanaMedico.setVisible(true);
+                ventanaMedico.setLocationRelativeTo(null);
+                this.dispose();
                 break;
             case "paciente":
                 JOptionPane.showMessageDialog(this, "Hola. Aquí puedes revisar tus citas médicas y recetas.");

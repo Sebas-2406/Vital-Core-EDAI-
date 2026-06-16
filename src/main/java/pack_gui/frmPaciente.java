@@ -15,54 +15,37 @@ import javax.swing.JOptionPane;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 import java.awt.Component;
+import java.time.LocalDate;
 import pack_estructuras.*;
+import pack_logica.*;
 
 /**
  *
  * @author USUARIO
  */
 public class frmPaciente extends javax.swing.JFrame {
-    
-        class CitaPaciente {
-        private String idCita;
-        private String fecha;
-        private String hora;
-        private String medico;
-        private String motivo;
-        private String estado;
-
-        public CitaPaciente(String idCita, String fecha, String hora, String medico, String motivo, String estado) {
-            this.idCita = idCita;
-            this.fecha = fecha;
-            this.hora = hora;
-            this.medico = medico;
-            this.motivo = motivo;
-            this.estado = estado;
-        }
-
-        public String getIdCita() { return idCita; }
-        public String getFecha() { return fecha; }
-        public String getHora() { return hora; }
-        public String getMedico() { return medico; }
-        public String getMotivo() { return motivo; }
-        public String getEstado() { return estado; }
-        public void setEstado(String estado) { this.estado = estado; }
-        }
+    //Clase extraida del paquete de lógica para simular la cita de un paciente
+    Cita citaPaciente;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frmPaciente.class.getName());
+    
+    //Variables globales para identificar al paciente que inicio sesión
     private String nombrePaciente;
     private String idPaciente;
-    private ListaEnlazada<CitaPaciente> misCitas;
+    private ListaEnlazada<Cita> misCitas;
 
     /**
      * Creates new form frmPacient
      */
+    
+    //Constructor por defecto para pruebas
     public frmPaciente() {
         this("Juan Pérez", "P001");
         this.setLocationRelativeTo(null);
         cargarMedicinasDisponibles();
     }
 
+    //Constructor del Jframe en base a atributos ingrsados. Además se ejecutan metodos de carga apenas se inicia
     public frmPaciente(String nombrePaciente, String idPaciente) {
         this.nombrePaciente = nombrePaciente;
         this.idPaciente = idPaciente;
@@ -73,35 +56,49 @@ public class frmPaciente extends javax.swing.JFrame {
         cargarMedicosDesdeCSV();
         cargarDatos();
         cargarMedicinasDisponibles();
-}
+    }
 
+    //Limpieza de posibles anteriores registros en el JFrame
     private void limpiarFormulario() {
-    txtDia.setText("");
-    txtMes.setText("");
-    txtAnio.setText("2026");
-    cmbHorario.setSelectedIndex(0);
-    cmbMedico.setSelectedIndex(0);
-    txtMotivo.setText("");
-}
+        txtDia.setText("");
+        txtMes.setText("");
+        txtAnio.setText("2026");
+        cmbHorario.setSelectedIndex(0);
+        cmbMedico.setSelectedIndex(0);
+        txtMotivo.setText("");
+    }
+    
+    //Cargado de los datos a partir de un archivo CSV
     private void cargarDatos() {
+        //Casteo de la el modelo de las tablas a un modelo por defecto
         DefaultTableModel modelo = (DefaultTableModel) tablaMisCitas.getModel();
-        modelo.setRowCount(0); // Limpiar tabla
+        modelo.setRowCount(0); // Limpieza de la tabla previo a la visualización
 
+        //Se limpia la cabecera de la lista enlazada de citas
         misCitas.setCabeza(null);
-
+        
+        //Apertura del archivo CSV
         java.io.File archivo = new java.io.File("citas.csv");
+        
+        //Si el archivo no existe, se retorna el método
         if (!archivo.exists()) {
             return;
         }
 
         try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(archivo))) {
-            String linea = br.readLine(); // Saltar encabezado
+            String linea = br.readLine(); // Saltar encabezado mediante su lectura
 
+            
             while ((linea = br.readLine()) != null) {
-                if (linea.trim().isEmpty()) continue;
+                //Si la linea esta vacía, pasar a la siguiente iteración
+                if (linea.trim().isEmpty()) {
+                    continue;
+                }
+                //Arreglo para almacenar los datos del csv
                 String[] datos = linea.split(",");
 
                 if (datos.length >= 9) {
+                    //Nombramiento de los datos para evitar ambiguedades
                     String idCita = datos[0];
                     String idPacienteCSV = datos[1];
                     String nombrePaciente = datos[2];
@@ -112,13 +109,16 @@ public class frmPaciente extends javax.swing.JFrame {
                     String motivo = datos[7]; 
                     String estado = datos[8];
 
-
+                    //Selección de los datos del usuario
                     if (idPacienteCSV.equals(this.idPaciente)) {
+                        
+                        //Ingreso de los datos a la tabla del paciente
                         modelo.addRow(new Object[]{
                             idCita, fecha, hora, medico, motivo, estado
                         });
 
-                        CitaPaciente cita = new CitaPaciente(idCita, fecha, hora, medico, motivo, estado);
+                        //Almnacenamiento dentro de la lista de citas
+                        Cita cita = new Cita(idCita, fecha, hora, medico, motivo, estado);
                         misCitas.agregar(cita);
                     }
                 }
@@ -131,13 +131,18 @@ public class frmPaciente extends javax.swing.JFrame {
         cbMedicamento.removeAllItems();
         cbMedicamento.addItem("Seleccionar Medicamento...");
 
+        //Apertura del documento csv del inventario de medicamentos
         File archivo = new File("inventario.csv");
-        if (!archivo.exists()) return;
+        if (!archivo.exists()) {
+            return;
+        }
 
         try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
             String linea = br.readLine(); // Saltar encabezado
             while ((linea = br.readLine()) != null) {
-                if (linea.trim().isEmpty()) continue;
+                if (linea.trim().isEmpty()) {
+                    continue;
+                }
                 String[] datos = linea.split(",");
                 if (datos.length == 2) {
                     String nombre = datos[0];
@@ -156,22 +161,26 @@ public class frmPaciente extends javax.swing.JFrame {
 
     private void guardarPedidoMedicamento(String medicamento, int cantidad) {
     try {
+        //Apertura de un archivo para almacenar el pedido
         File archivo = new File("pedidos_medicamentos.csv");
         boolean archivoExiste = archivo.exists();
         
         try (FileWriter fw = new FileWriter(archivo, true);
              PrintWriter pw = new PrintWriter(fw)) {
             
+            //En caso de que no existía el archivo se le escribe un encabezado por defecto
             if (!archivoExiste) {
                 pw.println("ID_PACIENTE,NOMBRE_PACIENTE,MEDICAMENTO,CANTIDAD,FECHA,ESTADO");
             }
             
-            java.time.LocalDate fechaActual = java.time.LocalDate.now();
+            //Registro de la fecha actual para el pedido
+            LocalDate fechaActual = LocalDate.now();
             String fecha = String.format("%02d/%02d/%d", 
                 fechaActual.getDayOfMonth(), 
                 fechaActual.getMonthValue(), 
                 fechaActual.getYear());
             
+            //Impresion de los datos en el archivo
             pw.println(String.format("%s,%s,%s,%d,%s,%s",
                 this.idPaciente,
                 this.nombrePaciente,
@@ -185,6 +194,7 @@ public class frmPaciente extends javax.swing.JFrame {
     }
 }
     
+    //Proceso para validar si el pedido es valido o infringe alguna condicion
     private void procesarPedido() {
         String medicinaSeleccionada = (String) cbMedicamento.getSelectedItem();
 
@@ -192,7 +202,7 @@ public class frmPaciente extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Por favor, seleccione un medicamento.");
             return;
         }
-
+        
         String cantStr = txtCantidad.getText().trim();
         if (cantStr.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Ingrese una cantidad.");
@@ -201,14 +211,16 @@ public class frmPaciente extends javax.swing.JFrame {
 
         try {
             int cantidadPedida = Integer.parseInt(cantStr);
+            //Asegurarse de que la cantidad solicitada sea mayor a cero
             if (cantidadPedida <= 0) throw new NumberFormatException();
-
+            
+            //Apertura del archivo y creacion de un hash map solo para almacenar el medicamento y el stock
             File archivo = new File("inventario.csv");
             Map<String, Integer> inventario = new LinkedHashMap<>();
             boolean exito = false;
 
             try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
-                String cabecera = br.readLine();
+                String cabecera = br.readLine();//Lectura de la cabecera
                 String l;
                 while ((l = br.readLine()) != null) {
                     String[] d = l.split(",");
@@ -256,25 +268,29 @@ public class frmPaciente extends javax.swing.JFrame {
         }
     }
     
+    //Se carga todos los médicos disponibles en el CSV
     private void cargarMedicosDesdeCSV() {
-    cmbMedico.removeAllItems();
-    cmbMedico.addItem("Seleccionar médico");
-    
-    java.io.File archivo = new java.io.File("medicos.csv");
-    if (!archivo.exists()) {
-        try (java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter(archivo))) {
-            pw.println("NOMBRE,ID_MEDICO");
-            pw.println("Dr. Estéfano Chávez,M001");
-            pw.println("Dra. Claris Delgado,M002");
-        } catch (java.io.IOException e) {
-            System.err.println("Error al crear archivo de médicos");
+        cmbMedico.removeAllItems();
+        cmbMedico.addItem("Seleccionar médico");
+
+        java.io.File archivo = new java.io.File("medicos.csv");
+        if (!archivo.exists()) {
+            try (java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter(archivo))) {
+                pw.println("NOMBRE,ID_MEDICO");
+                //Medicos predeterminados
+                pw.println("Dr. Estéfano Chávez,M001");
+                pw.println("Dra. Claris Delgado,M002");
+            } catch (java.io.IOException e) {
+                System.err.println("Error al crear archivo de médicos");
+            }
         }
-    }
     
     try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(archivo))) {
         String linea = br.readLine(); // Encabezado
         while ((linea = br.readLine()) != null) {
-            if (linea.trim().isEmpty()) continue;
+            if (linea.trim().isEmpty()) {
+                continue;
+            }
             String[] datos = linea.split(",");
             if (datos.length >= 2) {
                 cmbMedico.addItem(datos[0].trim() + "|" + datos[1].trim());
@@ -304,34 +320,32 @@ public class frmPaciente extends javax.swing.JFrame {
     });
     }
     
-
-
-    
+    //Método para almacenar la cita dentro del csv correspondiente
     private void guardarCitaEnCSV(String idCita, String idPaciente, String nombrePaciente, 
                                String fecha, String hora, String medicoCompleto, String motivo, String estado) {
-    String[] medicoData = medicoCompleto.split("\\|");
-    String nombreMedico = medicoData[0];
-    String idMedico = medicoData.length > 1 ? medicoData[1] : "";
-    
-    try {
-        java.io.File archivo = new java.io.File("citas.csv");
-        boolean archivoExiste = archivo.exists();
-        
-        try (java.io.FileWriter fw = new java.io.FileWriter(archivo, true);
-             java.io.PrintWriter pw = new java.io.PrintWriter(fw)) {
-            
-            if (!archivoExiste) {
-                pw.println("ID_CITA,ID_PACIENTE,NOMBRE_PACIENTE,FECHA,HORA,NOMBRE_MEDICO,ID_MEDICO,MOTIVO,ESTADO");
+        String[] medicoData = medicoCompleto.split("\\|");
+        String nombreMedico = medicoData[0];
+        String idMedico = medicoData.length > 1 ? medicoData[1] : "";
+
+        try {
+            java.io.File archivo = new java.io.File("citas.csv");
+            boolean archivoExiste = archivo.exists();
+
+            try (java.io.FileWriter fw = new java.io.FileWriter(archivo, true);
+                 java.io.PrintWriter pw = new java.io.PrintWriter(fw)) {
+
+                if (!archivoExiste) {
+                    pw.println("ID_CITA,ID_PACIENTE,NOMBRE_PACIENTE,FECHA,HORA,NOMBRE_MEDICO,ID_MEDICO,MOTIVO,ESTADO");
+                }
+
+                pw.println(String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s",
+                    idCita, idPaciente, nombrePaciente, fecha, hora, 
+                    nombreMedico, idMedico, motivo, estado));
             }
-            
-            pw.println(String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s",
-                idCita, idPaciente, nombrePaciente, fecha, hora, 
-                nombreMedico, idMedico, motivo, estado));
+        } catch (java.io.IOException e) {
+            JOptionPane.showMessageDialog(this, "Error al guardar cita: " + e.getMessage());
         }
-    } catch (java.io.IOException e) {
-        JOptionPane.showMessageDialog(this, "Error al guardar cita: " + e.getMessage());
     }
-}
     
     /**
      * This method is called from within the constructor to initialize the form.
@@ -628,7 +642,7 @@ public class frmPaciente extends javax.swing.JFrame {
     
     String motivo = txtMotivo.getText().trim();
     
-    CitaPaciente nuevaCita = new CitaPaciente(idCita, fechaStr, hora, nombreMedico, motivo, "Agendada");
+    Cita nuevaCita = new Cita(idCita, fechaStr, hora, nombreMedico, motivo, "Agendada");
     misCitas.agregar(nuevaCita);
     
     guardarCitaEnCSV(idCita, idPaciente, nombrePaciente, fechaStr, hora, medicoCompleto, motivo, "Agendada");
