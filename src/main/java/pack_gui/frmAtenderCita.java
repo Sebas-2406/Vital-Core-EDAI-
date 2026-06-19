@@ -132,10 +132,15 @@ public class frmAtenderCita extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollBar1 = new javax.swing.JScrollBar();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jScrollPane3 = new javax.swing.JScrollPane();
         pEncabezadoACM = new javax.swing.JPanel();
         lAtencionConsultaM = new javax.swing.JLabel();
         lIdCita = new javax.swing.JLabel();
         lPaciente = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jScrollPane4 = new javax.swing.JScrollPane();
         pPrincipalACM = new javax.swing.JPanel();
         jGravedad = new javax.swing.JLabel();
         cmbGravedad = new javax.swing.JComboBox<>();
@@ -165,8 +170,7 @@ public class frmAtenderCita extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Atender Cita");
-        setPreferredSize(new java.awt.Dimension(900, 600));
-        setResizable(false);
+        setPreferredSize(new java.awt.Dimension(900, 800));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         pEncabezadoACM.setBackground(new java.awt.Color(70, 130, 180));
@@ -193,6 +197,7 @@ public class frmAtenderCita extends javax.swing.JFrame {
         pEncabezadoACM.add(lPaciente, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, -1, -1));
 
         getContentPane().add(pEncabezadoACM, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 70, 100, -1));
 
         pPrincipalACM.setBackground(new java.awt.Color(255, 255, 255));
         pPrincipalACM.setPreferredSize(new java.awt.Dimension(740, 600));
@@ -323,8 +328,6 @@ public class frmAtenderCita extends javax.swing.JFrame {
         btnEliminarMedicina.addActionListener(this::btnEliminarMedicinaActionPerformed);
         pPrincipalACM.add(btnEliminarMedicina, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 560, -1, -1));
 
-        getContentPane().add(pPrincipalACM, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, -1, -1));
-
         btnCancelar.setBackground(new java.awt.Color(220, 20, 60));
         btnCancelar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
@@ -332,7 +335,7 @@ public class frmAtenderCita extends javax.swing.JFrame {
         btnCancelar.setFocusPainted(false);
         btnCancelar.setPreferredSize(new java.awt.Dimension(131, 27));
         btnCancelar.addActionListener(this::btnCancelarActionPerformed);
-        getContentPane().add(btnCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 750, 100, 30));
+        pPrincipalACM.add(btnCancelar, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 560, 100, 30));
 
         btnNoSePresento.setBackground(new java.awt.Color(255, 140, 0));
         btnNoSePresento.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -340,7 +343,7 @@ public class frmAtenderCita extends javax.swing.JFrame {
         btnNoSePresento.setText("No se presentó");
         btnNoSePresento.setFocusPainted(false);
         btnNoSePresento.addActionListener(this::btnNoSePresentoActionPerformed);
-        getContentPane().add(btnNoSePresento, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 750, -1, -1));
+        pPrincipalACM.add(btnNoSePresento, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 560, -1, -1));
 
         btnGuardar.setBackground(new java.awt.Color(60, 179, 113));
         btnGuardar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -348,7 +351,11 @@ public class frmAtenderCita extends javax.swing.JFrame {
         btnGuardar.setText("Guardar");
         btnGuardar.setFocusPainted(false);
         btnGuardar.addActionListener(this::btnGuardarActionPerformed);
-        getContentPane().add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 750, -1, -1));
+        pPrincipalACM.add(btnGuardar, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 560, -1, -1));
+
+        jScrollPane4.setViewportView(pPrincipalACM);
+
+        getContentPane().add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 760, 390));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -532,6 +539,11 @@ public class frmAtenderCita extends javax.swing.JFrame {
     private javax.swing.JLabel jDiagnostico;
     private javax.swing.JLabel jGravedad;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JScrollBar jScrollBar1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JLabel lAtencionConsultaM;
     private javax.swing.JLabel lDosis;
     private javax.swing.JLabel lDuracion;
