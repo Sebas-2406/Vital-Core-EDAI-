@@ -43,7 +43,6 @@ public class frmlogin extends javax.swing.JFrame {
     private void initComponents() {
 
         pFondoLogin = new javax.swing.JPanel();
-        iLogin = new javax.swing.JLabel();
         lUsuario = new javax.swing.JLabel();
         lcontrasena = new javax.swing.JLabel();
         bIniciarsesion = new javax.swing.JButton();
@@ -58,8 +57,6 @@ public class frmlogin extends javax.swing.JFrame {
         setResizable(false);
 
         pFondoLogin.setBackground(java.awt.SystemColor.control);
-
-        iLogin.setText("jLabel2");
 
         lUsuario.setText("Usuario");
 
@@ -131,13 +128,8 @@ public class frmlogin extends javax.swing.JFrame {
                     .addGroup(pFondoLoginLayout.createSequentialGroup()
                         .addGap(8, 8, 8)
                         .addComponent(lUsuario)
-                        .addGroup(pFondoLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(pFondoLoginLayout.createSequentialGroup()
-                                .addGap(33, 33, 33)
-                                .addComponent(iLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pFondoLoginLayout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(tUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(tUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(45, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pFondoLoginLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -150,9 +142,7 @@ public class frmlogin extends javax.swing.JFrame {
             pFondoLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pFondoLoginLayout.createSequentialGroup()
                 .addComponent(pEncabezadoLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(iLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 146, Short.MAX_VALUE)
                 .addGroup(pFondoLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lUsuario)
                     .addComponent(tUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -252,10 +242,10 @@ public class frmlogin extends javax.swing.JFrame {
                 this.setVisible(false);
                 break;
             case "farmaceutico":
-                JOptionPane.showMessageDialog(this, 
-                    "El acceso al panel de Farmacia está temporalmente inactivo.", 
-                    "Módulo Deshabilitado", 
-                    JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Acceso concedido. Inventario de farmacia disponible.");
+                frmFarmaceutico farm = new frmFarmaceutico(nombreUsuario);
+                farm.setVisible(true);
+                this.setVisible(false);
                 break;
             default:
                 JOptionPane.showMessageDialog(this, "Bienvenido al sistema Vital-Core.");
@@ -340,7 +330,6 @@ public class frmlogin extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bCrearCuenta;
     private javax.swing.JButton bIniciarsesion;
-    private javax.swing.JLabel iLogin;
     private javax.swing.JLabel lLogin;
     private javax.swing.JLabel lUsuario;
     private javax.swing.JLabel lcontrasena;

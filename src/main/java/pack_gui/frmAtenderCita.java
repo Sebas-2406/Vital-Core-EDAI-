@@ -30,7 +30,7 @@ public class frmAtenderCita extends javax.swing.JFrame {
 
     private String idCita;
     private String nombrePaciente;
-    private ListaEnlazada<String[]> medicinas; 
+    private Pila<String[]> medicinas; 
     private boolean citaAtendida = false; 
     private String estadoCita = "";
 
@@ -41,7 +41,7 @@ public class frmAtenderCita extends javax.swing.JFrame {
     public frmAtenderCita(String idCita, String nombrePaciente) {
         this.idCita = idCita;
         this.nombrePaciente = nombrePaciente;
-        this.medicinas = new ListaEnlazada<>();
+        this.medicinas = new Pila<>();
         initComponents();
         lIdCita.setText("ID Cita: " + idCita);
         lPaciente.setText("Paciente: " + nombrePaciente);
@@ -163,7 +163,7 @@ public class frmAtenderCita extends javax.swing.JFrame {
         btnAgregarMedicina = new javax.swing.JButton();
         scrpMedicamentos = new javax.swing.JScrollPane();
         tablaMedicinas = new javax.swing.JTable();
-        btnEliminarMedicina = new javax.swing.JButton();
+        btnDeshacerUltimoIngreso = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
         btnNoSePresento = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
@@ -319,14 +319,14 @@ public class frmAtenderCita extends javax.swing.JFrame {
 
         pPrincipalACM.add(scrpMedicamentos, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 435, -1, -1));
 
-        btnEliminarMedicina.setBackground(new java.awt.Color(220, 20, 60));
-        btnEliminarMedicina.setForeground(new java.awt.Color(255, 255, 255));
-        btnEliminarMedicina.setText("Eliminar");
-        btnEliminarMedicina.setEnabled(false);
-        btnEliminarMedicina.setFocusPainted(false);
-        btnEliminarMedicina.setPreferredSize(new java.awt.Dimension(90, 23));
-        btnEliminarMedicina.addActionListener(this::btnEliminarMedicinaActionPerformed);
-        pPrincipalACM.add(btnEliminarMedicina, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 560, -1, -1));
+        btnDeshacerUltimoIngreso.setBackground(new java.awt.Color(220, 20, 60));
+        btnDeshacerUltimoIngreso.setForeground(new java.awt.Color(255, 255, 255));
+        btnDeshacerUltimoIngreso.setText("Deshacer Ultimo Ingreso");
+        btnDeshacerUltimoIngreso.setEnabled(false);
+        btnDeshacerUltimoIngreso.setFocusPainted(false);
+        btnDeshacerUltimoIngreso.setPreferredSize(new java.awt.Dimension(90, 23));
+        btnDeshacerUltimoIngreso.addActionListener(this::btnDeshacerUltimoIngresoActionPerformed);
+        pPrincipalACM.add(btnDeshacerUltimoIngreso, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 560, 180, -1));
 
         btnCancelar.setBackground(new java.awt.Color(220, 20, 60));
         btnCancelar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -367,7 +367,7 @@ public class frmAtenderCita extends javax.swing.JFrame {
     txtDosis.setEnabled(habilitado);
     txtIndicaciones.setEnabled(habilitado);
     btnAgregarMedicina.setEnabled(habilitado);
-    btnEliminarMedicina.setEnabled(habilitado);
+    btnDeshacerUltimoIngreso.setEnabled(habilitado);
     }//GEN-LAST:event_chkRecetaActionPerformed
 
     private void btnAgregarMedicinaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarMedicinaActionPerformed
@@ -401,29 +401,39 @@ public class frmAtenderCita extends javax.swing.JFrame {
         return;
     }
     
+    String[] nuevaMedicina = {medicamento, dosis, indicaciones};
+    medicinas.apilar(nuevaMedicina);
+    
     javax.swing.table.DefaultTableModel modelo = 
         (javax.swing.table.DefaultTableModel) tablaMedicinas.getModel();
     modelo.addRow(new Object[]{medicamento, dosis, indicaciones});
+
+    
     
     // Limpiar campos
     txtMedicamento.setText("");
     txtDosis.setText("");
     txtIndicaciones.setText("");
     txtMedicamento.requestFocus();
+    
     }//GEN-LAST:event_btnAgregarMedicinaActionPerformed
 
-    private void btnEliminarMedicinaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarMedicinaActionPerformed
+    private void btnDeshacerUltimoIngresoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeshacerUltimoIngresoActionPerformed
         // TODO add your handling code here:
-    int fila = tablaMedicinas.getSelectedRow();
-    if (fila == -1) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Seleccione un medicamento para eliminar");
-        return;
-    }
-    
-    javax.swing.table.DefaultTableModel modelo = 
-        (javax.swing.table.DefaultTableModel) tablaMedicinas.getModel();
-    modelo.removeRow(fila);
-    }//GEN-LAST:event_btnEliminarMedicinaActionPerformed
+        //Validar si la pila de medicinas está vacía
+        if (medicinas.estaVacia()) {
+                javax.swing.JOptionPane.showMessageDialog(this, "No hay medicamentos recientes para deshacer.");
+                return;
+        }
+        //Desapilar ese último ingreso
+        medicinas.desapilar();
+
+        javax.swing.table.DefaultTableModel modelo = 
+                (javax.swing.table.DefaultTableModel) tablaMedicinas.getModel();
+        //Eliminar de la parte gráfica
+        int ultimaFila = modelo.getRowCount() - 1;
+            modelo.removeRow(ultimaFila);
+    }//GEN-LAST:event_btnDeshacerUltimoIngresoActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         // TODO add your handling code here:
@@ -531,7 +541,7 @@ public class frmAtenderCita extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregarMedicina;
     private javax.swing.JButton btnCancelar;
-    private javax.swing.JButton btnEliminarMedicina;
+    private javax.swing.JButton btnDeshacerUltimoIngreso;
     private javax.swing.JButton btnGuardar;
     private javax.swing.JButton btnNoSePresento;
     private javax.swing.JCheckBox chkReceta;

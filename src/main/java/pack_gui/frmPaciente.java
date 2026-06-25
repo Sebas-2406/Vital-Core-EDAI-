@@ -74,8 +74,8 @@ public class frmPaciente extends javax.swing.JFrame {
         DefaultTableModel modelo = (DefaultTableModel) tablaMisCitas.getModel();
         modelo.setRowCount(0); // Limpieza de la tabla previo a la visualización
 
-        //Se limpia la cabecera de la lista enlazada de citas
-        misCitas.setCabeza(null);
+        //Se establece la pila
+        pack_estructuras.Pila<Cita> historialPila = new pack_estructuras.Pila<>();
         
         //Apertura del archivo CSV
         java.io.File archivo = new java.io.File("citas.csv");
@@ -108,20 +108,18 @@ public class frmPaciente extends javax.swing.JFrame {
                     String idMedico = datos[6];
                     String motivo = datos[7]; 
                     String estado = datos[8];
-
-                    //Selección de los datos del usuario
+                    //Almanacenamiento dentro de la lista de citas
                     if (idPacienteCSV.equals(this.idPaciente)) {
-                        
-                        //Ingreso de los datos a la tabla del paciente
-                        modelo.addRow(new Object[]{
-                            idCita, fecha, hora, medico, motivo, estado
-                        });
-
-                        //Almnacenamiento dentro de la lista de citas
                         Cita cita = new Cita(idCita, fecha, hora, medico, motivo, estado);
-                        misCitas.agregar(cita);
+                        historialPila.apilar(cita); 
                     }
                 }
+            }
+            while (!historialPila.estaVacia()) {
+                Cita c = historialPila.desapilar();
+                modelo.addRow(new Object[]{
+                    c.getIdCita(), c.getFecha(), c.getHora(), c.getMedico(), c.getMotivo(), c.getEstado()
+                });
             }
         } catch (java.io.IOException e) {
             System.err.println("Error al cargar citas: " + e.getMessage());
@@ -322,7 +320,7 @@ public class frmPaciente extends javax.swing.JFrame {
     
     //Método para almacenar la cita dentro del csv correspondiente
     private void guardarCitaEnCSV(String idCita, String idPaciente, String nombrePaciente, 
-                               String fecha, String hora, String medicoCompleto, String motivo, String estado) {
+                                  String fecha, String hora, String medicoCompleto, String motivo, String estado) {
         String[] medicoData = medicoCompleto.split("\\|");
         String nombreMedico = medicoData[0];
         String idMedico = medicoData.length > 1 ? medicoData[1] : "";

@@ -1,0 +1,33 @@
+═══════════════════════════════════════════════════════════
+              REGISTRO DE CONSULTA MÉDICA
+═══════════════════════════════════════════════════════════
+
+ID CITA: C100
+PACIENTE: M chavez
+FECHA DE REGISTRO: 25/06/2026 09:13:00
+
+───────────────────────────────────────────────────────────
+INFORMACIÓN CLÍNICA
+───────────────────────────────────────────────────────────
+
+GRAVEDAD: Moderada
+
+DIAGNÓSTICO:
+Cefalea
+
+TRATAMIENTO:
+Reposo
+
+DURACIÓN DEL TRATAMIENTO: 7 días
+
+───────────────────────────────────────────────────────────
+PRESCRIPCIÓN DE MEDICAMENTOS
+───────────────────────────────────────────────────────────
+
+1. Ibuprofeno
+   Dosis: 12
+   Indicaciones: Tomar cada 12 horas por 5 dias
+
+═══════════════════════════════════════════════════════════
+           Fin del Registro de Consulta
+═══════════════════════════════════════════════════════════
