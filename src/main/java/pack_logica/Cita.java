@@ -1,8 +1,5 @@
 package pack_logica;
 
-import java.sql.Time;
-import java.time.LocalDate;
-
 public class Cita {
     protected String idCita;
     protected String fecha;
