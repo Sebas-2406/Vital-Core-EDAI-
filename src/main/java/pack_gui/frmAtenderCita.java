@@ -170,7 +170,7 @@ public class frmAtenderCita extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Atender Cita");
-        setPreferredSize(new java.awt.Dimension(900, 800));
+        setPreferredSize(new java.awt.Dimension(850, 600));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         pEncabezadoACM.setBackground(new java.awt.Color(70, 130, 180));
@@ -196,7 +196,7 @@ public class frmAtenderCita extends javax.swing.JFrame {
         lPaciente.setPreferredSize(new java.awt.Dimension(500, 22));
         pEncabezadoACM.add(lPaciente, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, -1, -1));
 
-        getContentPane().add(pEncabezadoACM, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+        getContentPane().add(pEncabezadoACM, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 830, -1));
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(630, 70, 100, -1));
 
         pPrincipalACM.setBackground(new java.awt.Color(255, 255, 255));
@@ -355,7 +355,7 @@ public class frmAtenderCita extends javax.swing.JFrame {
 
         jScrollPane4.setViewportView(pPrincipalACM);
 
-        getContentPane().add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 760, 390));
+        getContentPane().add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 120, 830, 440));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
