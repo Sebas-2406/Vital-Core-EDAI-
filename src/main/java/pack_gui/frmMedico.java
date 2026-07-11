@@ -202,6 +202,55 @@ public class frmMedico extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    public pack_logica.Cita[] ordenarCitasMergeSort(pack_logica.Cita[] arreglo) {
+        if (arreglo.length <= 1) {
+            return arreglo; // Caso base: un arreglo de 1 o 0 elementos ya está ordenado
+        }
+
+        int medio = arreglo.length / 2;
+        // División del arreglo en dos mitades
+        pack_logica.Cita[] izquierda = java.util.Arrays.copyOfRange(arreglo, 0, medio);
+        pack_logica.Cita[] derecha = java.util.Arrays.copyOfRange(arreglo, medio, arreglo.length);
+
+        // Llamadas recursivas
+        izquierda = ordenarCitasMergeSort(izquierda);
+        derecha = ordenarCitasMergeSort(derecha);
+
+        // Union de ambas mitades
+        return merge(izquierda, derecha);
+    }
+    
+    private pack_logica.Cita[] merge(pack_logica.Cita[] izquierda, pack_logica.Cita[] derecha) {
+        pack_logica.Cita[] resultado = new pack_logica.Cita[izquierda.length + derecha.length];
+        int i = 0, j = 0, k = 0;
+
+        while (i < izquierda.length && j < derecha.length) {
+            // Criterio para evaluar fechas y horas
+            if (criterioCronologico(izquierda[i], derecha[j])) {
+                resultado[k++] = izquierda[i++];
+            } else {
+                resultado[k++] = derecha[j++];
+            }
+        }
+        while (i < izquierda.length) { resultado[k++] = izquierda[i++]; }
+        while (j < derecha.length) { resultado[k++] = derecha[j++]; }
+
+        return resultado;
+    }
+    
+    private boolean criterioCronologico(pack_logica.Cita c1, pack_logica.Cita c2) {
+        // Comparación de las fechas
+        int comparacionFecha = c1.getFecha().compareTo(c2.getFecha());
+
+        if (comparacionFecha != 0) {
+            return comparacionFecha < 0; // Retorna true si c1 es anterior a c2
+        }
+
+        //Si son exactamente el mismo día, el que tenga la hora más temprana va primero
+        return c1.getHora().compareTo(c2.getHora()) < 0;
+    }
+    
     private void btnAtenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtenderActionPerformed
         // TODO add your handling code here:
         atenderCita();
@@ -224,49 +273,69 @@ public class frmMedico extends javax.swing.JFrame {
 
     
     private void cargarDatosCitas() {
-    javax.swing.table.DefaultTableModel modeloAgendadas = 
-        (javax.swing.table.DefaultTableModel) tablaCitasAgendadas.getModel();
-    javax.swing.table.DefaultTableModel modeloAtendidas = 
-        (javax.swing.table.DefaultTableModel) tablaCitasAtendidas.getModel();
+        javax.swing.table.DefaultTableModel modeloAgendadas = 
+            (javax.swing.table.DefaultTableModel) tablaCitasAgendadas.getModel();
+        javax.swing.table.DefaultTableModel modeloAtendidas = 
+            (javax.swing.table.DefaultTableModel) tablaCitasAtendidas.getModel();
 
-    modeloAgendadas.setRowCount(0);
-    modeloAtendidas.setRowCount(0);
-    
-    java.io.File archivo = new java.io.File("citas.csv");
-    if (!archivo.exists()) return;
+        modeloAgendadas.setRowCount(0);
+        modeloAtendidas.setRowCount(0);
 
-    try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(archivo))) {
-        String linea = br.readLine(); // Encabezado
-        
-        while ((linea = br.readLine()) != null) {
-            if (linea.trim().isEmpty()) continue;
-            String[] datos = linea.split(",");
+        java.io.File archivo = new java.io.File("citas.csv");
+        if (!archivo.exists()) return;
 
-            if (datos.length >= 9) {
-                String idCita = datos[0];
-                String nombrePaciente = datos[2];
-                String fecha = datos[3];
-                String hora = datos[4];
-                String nombreMedicoCita = datos[5];
-                String idMedicoCita = datos[6];
-                String motivo = datos[7];
-                String estado = datos[8];
+        java.util.ArrayList<pack_logica.Cita> listaTemporalAgendadas = new java.util.ArrayList<>();
+        java.util.ArrayList<pack_logica.Cita> listaTemporalAtendidas = new java.util.ArrayList<>();
 
-                // Comparar por ID del médico
-                if (idMedicoCita.equals(this.idMedico)) {
-                    Object[] fila = {idCita, fecha, hora, nombrePaciente, motivo, estado};
+        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(archivo))) {
+            String linea = br.readLine(); // Saltar encabezado
 
-                    if (estado.equals("Agendada")) {
-                        modeloAgendadas.addRow(fila);
-                    } else if (estado.equals("Atendida") || estado.equals("No se presentó")) {
-                        modeloAtendidas.addRow(fila);
+            while ((linea = br.readLine()) != null) {
+                if (linea.trim().isEmpty()) continue;
+                String[] datos = linea.split(",");
+
+                // Formato exacto de 9 columnas
+                if (datos.length >= 9) {
+                    String idCita = datos[0];
+                    String nombrePaciente = datos[2]; 
+                    String fecha = datos[3];
+                    String hora = datos[4];
+                    String nombreMedicoCSV = datos[5]; // Nombre guardado en el archivo
+                    String idMedicoCSV = datos[6];     // ID o correo guardado en el archivo
+                    String motivo = datos[7];
+                    String estado = datos[8];
+
+
+                    if (nombreMedicoCSV.equals(this.nombreMedico) || 
+                        idMedicoCSV.equals(this.idMedico) || 
+                        this.idMedico.equals("default")) {
+
+                        pack_logica.Cita nuevaCita = new pack_logica.Cita(idCita, fecha, hora, nombrePaciente, motivo, estado);
+
+                        if (estado.equals("Agendada")) {
+                            listaTemporalAgendadas.add(nuevaCita);
+                        } else if (estado.equals("Atendida") || estado.equals("No se presentó")) {
+                            listaTemporalAtendidas.add(nuevaCita);
+                        }
                     }
                 }
             }
+        } catch (java.io.IOException e) {
+            System.err.println("Error al cargar citas: " + e.getMessage());
         }
-    } catch (java.io.IOException e) {
-        System.err.println("Error al cargar citas: " + e.getMessage());
-    }
+
+        pack_logica.Cita[] arregloDesordenado = listaTemporalAgendadas.toArray(new pack_logica.Cita[0]);
+        pack_logica.Cita[] arregloOrdenado = ordenarCitasMergeSort(arregloDesordenado);
+
+        for (pack_logica.Cita c : arregloOrdenado) {
+            Object[] fila = {c.getIdCita(), c.getFecha(), c.getHora(), c.getMedico(), c.getMotivo(), c.getEstado()};
+            modeloAgendadas.addRow(fila);
+        }
+
+        for (pack_logica.Cita c : listaTemporalAtendidas) {
+            Object[] fila = {c.getIdCita(), c.getFecha(), c.getHora(), c.getMedico(), c.getMotivo(), c.getEstado()};
+            modeloAtendidas.addRow(fila);
+        }
     }
     
     //Metodo de actualización de las citas en el archivo CSV
@@ -310,6 +379,7 @@ public class frmMedico extends javax.swing.JFrame {
     
     
     private void cargarCitasAgendadas() {
+        cargarDatosCitas();
         javax.swing.JOptionPane.showMessageDialog(this, "Citas actualizadas");
     }
     

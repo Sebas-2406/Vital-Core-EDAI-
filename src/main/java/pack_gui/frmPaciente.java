@@ -61,7 +61,7 @@ public class frmPaciente extends javax.swing.JFrame {
     //Limpieza de posibles anteriores registros en el JFrame
     private void limpiarFormulario() {
         txtDia.setText("");
-        txtMes.setText("");
+        cbMes.setSelectedIndex(0);
         txtAnio.setText("2026");
         cmbHorario.setSelectedIndex(0);
         cmbMedico.setSelectedIndex(0);
@@ -271,78 +271,51 @@ public class frmPaciente extends javax.swing.JFrame {
         cmbMedico.removeAllItems();
         cmbMedico.addItem("Seleccionar médico");
 
-        java.io.File archivo = new java.io.File("medicos.csv");
-        if (!archivo.exists()) {
-            try (java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter(archivo))) {
-                pw.println("NOMBRE,ID_MEDICO");
-                //Medicos predeterminados
-                pw.println("Dr. Estéfano Chávez,M001");
-                pw.println("Dra. Claris Delgado,M002");
-            } catch (java.io.IOException e) {
-                System.err.println("Error al crear archivo de médicos");
-            }
-        }
-    
-    try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(archivo))) {
-        String linea = br.readLine(); // Encabezado
-        while ((linea = br.readLine()) != null) {
-            if (linea.trim().isEmpty()) {
-                continue;
-            }
-            String[] datos = linea.split(",");
-            if (datos.length >= 2) {
-                cmbMedico.addItem(datos[0].trim() + "|" + datos[1].trim());
-            }
-        }
-    } catch (java.io.IOException e) {
-        System.err.println("Error al cargar médicos: " + e.getMessage());
-    }
-    cmbMedico.setRenderer(new DefaultListCellRenderer() {
-        @Override
-        public Component getListCellRendererComponent(JList<?> list, Object value, 
-                                                     int index, boolean isSelected, boolean cellHasFocus) {
-            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            
-            if (value != null) {
-                String texto = value.toString();
-                if (texto.contains("|")) {
-                    String[] partes = texto.split("\\|");
-                    setText(partes[0].trim()); 
-                } else {
-                    setText(texto);
+        // LECTURA CENTRALIZADA: Todos los doctores están en usuarios.csv
+        java.io.File archivo = new java.io.File("usuarios.csv");
+        if (!archivo.exists()) return;
+
+        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(archivo))) {
+            String linea = br.readLine(); // Saltar encabezado
+
+            while ((linea = br.readLine()) != null) {
+                if (linea.trim().isEmpty()) continue;
+                String[] datos = linea.split(",");
+
+                if (datos.length >= 1) {
+                    String correo = datos[0].trim();
+
+                    // Si la cuenta tiene rol de doctor, se agrega a la lista
+                    if (correo.contains("_doctor@")) {
+                        String nombreDoc = correo.substring(0, correo.indexOf("_")).replace(".", " ");
+                        nombreDoc = nombreDoc.substring(0, 1).toUpperCase() + nombreDoc.substring(1).toLowerCase();
+
+                        // Formato unificado: "Dr. Nombre - correo"
+                        cmbMedico.addItem("Dr. " + nombreDoc + " - " + correo);
+                    }
                 }
-            }
-            
-            return this;
-        }
-    });
-    }
-    
-    //Método para almacenar la cita dentro del csv correspondiente
-    private void guardarCitaEnCSV(String idCita, String idPaciente, String nombrePaciente, 
-                                  String fecha, String hora, String medicoCompleto, String motivo, String estado) {
-        String[] medicoData = medicoCompleto.split("\\|");
-        String nombreMedico = medicoData[0];
-        String idMedico = medicoData.length > 1 ? medicoData[1] : "";
-
-        try {
-            java.io.File archivo = new java.io.File("citas.csv");
-            boolean archivoExiste = archivo.exists();
-
-            try (java.io.FileWriter fw = new java.io.FileWriter(archivo, true);
-                 java.io.PrintWriter pw = new java.io.PrintWriter(fw)) {
-
-                if (!archivoExiste) {
-                    pw.println("ID_CITA,ID_PACIENTE,NOMBRE_PACIENTE,FECHA,HORA,NOMBRE_MEDICO,ID_MEDICO,MOTIVO,ESTADO");
-                }
-
-                pw.println(String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s",
-                    idCita, idPaciente, nombrePaciente, fecha, hora, 
-                    nombreMedico, idMedico, motivo, estado));
             }
         } catch (java.io.IOException e) {
-            JOptionPane.showMessageDialog(this, "Error al guardar cita: " + e.getMessage());
+            System.err.println("Error al cargar médicos: " + e.getMessage());
         }
+
+        // Ocultar visualmente el correo en la lista para que el paciente solo vea el nombre
+        cmbMedico.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, 
+                                                         int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value != null) {
+                    String texto = value.toString();
+                    if (texto.contains(" - ")) {
+                        setText(texto.split(" - ")[0]); // Muestra solo "Dr. Nombre"
+                    } else {
+                        setText(texto);
+                    }
+                }
+                return this;
+            }
+        });
     }
     
     /**
@@ -363,7 +336,6 @@ public class frmPaciente extends javax.swing.JFrame {
         lblDia = new javax.swing.JLabel();
         lblMes = new javax.swing.JLabel();
         txtDia = new javax.swing.JTextField();
-        txtMes = new javax.swing.JTextField();
         lblAnio = new javax.swing.JLabel();
         txtAnio = new javax.swing.JTextField();
         lblHora = new javax.swing.JLabel();
@@ -375,6 +347,7 @@ public class frmPaciente extends javax.swing.JFrame {
         txtMotivo = new javax.swing.JTextArea();
         btnLimpiarFormulario = new javax.swing.JButton();
         btnAgendarCita = new javax.swing.JButton();
+        cbMes = new javax.swing.JComboBox<>();
         panelMisCitas = new javax.swing.JPanel();
         scrpCitas = new javax.swing.JScrollPane();
         tablaMisCitas = new javax.swing.JTable();
@@ -419,27 +392,23 @@ public class frmPaciente extends javax.swing.JFrame {
         panelAgendarCita.add(lblFecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 20, -1, -1));
 
         lblDia.setText("Dia:");
-        panelAgendarCita.add(lblDia, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 45, -1, -1));
+        panelAgendarCita.add(lblDia, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 40, -1, -1));
 
         lblMes.setText("Mes: ");
-        panelAgendarCita.add(lblMes, new org.netbeans.lib.awtextra.AbsoluteConstraints(105, 45, -1, -1));
+        panelAgendarCita.add(lblMes, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 40, -1, -1));
 
         txtDia.setToolTipText("Día (1 - 31)");
         txtDia.setPreferredSize(new java.awt.Dimension(60, 25));
-        panelAgendarCita.add(txtDia, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 65, -1, -1));
-
-        txtMes.setToolTipText("Mes (1 - 12)");
-        txtMes.setPreferredSize(new java.awt.Dimension(60, 25));
-        panelAgendarCita.add(txtMes, new org.netbeans.lib.awtextra.AbsoluteConstraints(105, 65, -1, -1));
+        panelAgendarCita.add(txtDia, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 60, -1, 30));
 
         lblAnio.setText("Año: ");
         lblAnio.setPreferredSize(new java.awt.Dimension(40, 20));
-        panelAgendarCita.add(lblAnio, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 45, -1, -1));
+        panelAgendarCita.add(lblAnio, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 40, -1, -1));
 
         txtAnio.setText("2026");
         txtAnio.setToolTipText("Año (AAAA)");
         txtAnio.setPreferredSize(new java.awt.Dimension(100, 25));
-        panelAgendarCita.add(txtAnio, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 65, -1, -1));
+        panelAgendarCita.add(txtAnio, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 60, -1, 30));
 
         lblHora.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
         lblHora.setText("Horario: ");
@@ -488,6 +457,9 @@ public class frmPaciente extends javax.swing.JFrame {
         btnAgendarCita.setPreferredSize(new java.awt.Dimension(120, 35));
         btnAgendarCita.addActionListener(this::btnAgendarCitaActionPerformed);
         panelAgendarCita.add(btnAgendarCita, new org.netbeans.lib.awtextra.AbsoluteConstraints(165, 400, -1, -1));
+
+        cbMes.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12" }));
+        panelAgendarCita.add(cbMes, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 60, -1, 30));
 
         tabpPaciente.addTab("Agendar Cita", panelAgendarCita);
 
@@ -579,89 +551,110 @@ public class frmPaciente extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgendarCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgendarCitaActionPerformed
-        // TODO add your handling code here:
-    // Validación de fecha
-    String dia = txtDia.getText().trim();
-    String mes = txtMes.getText().trim();
-    String anio = txtAnio.getText().trim();
-    
-    if (dia.isEmpty() || mes.isEmpty() || anio.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Debe completar la fecha (día, mes y año)");
-        return;
-    }
-    
-    try {
-        int diaNum = Integer.parseInt(dia);
-        int mesNum = Integer.parseInt(mes);
-        int anioNum = Integer.parseInt(anio);
-        
-        if (diaNum < 1 || diaNum > 31) {
-            JOptionPane.showMessageDialog(this, "El día debe estar entre 1 y 31");
+        // 1. Obtención de datos básicos
+        String diaStr = txtDia.getText().trim();
+        String mesStr = cbMes.getSelectedItem().toString(); // Extraído del ComboBox
+        String anioStr = txtAnio.getText().trim();
+
+        if (diaStr.isEmpty() || anioStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe completar el día y el año.");
             return;
         }
-        if (mesNum < 1 || mesNum > 12) {
-            JOptionPane.showMessageDialog(this, "El mes debe estar entre 1 y 12");
+
+        // 2. Formateo y Validación Estricta de la Fecha (Mismo algoritmo del Admin)
+        String fechaGenerada;
+        try {
+            int d = Integer.parseInt(diaStr);
+            int m = Integer.parseInt(mesStr);
+            int a = Integer.parseInt(anioStr);
+
+            fechaGenerada = String.format("%04d-%02d-%02d", a, m, d);
+
+            java.time.LocalDate fechaIngresada = java.time.LocalDate.parse(fechaGenerada);
+            if (fechaIngresada.isBefore(java.time.LocalDate.now())) {
+                JOptionPane.showMessageDialog(this, "Error: No puede agendar citas en el pasado.");
+                return;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "La fecha debe contener solo números.");
+            return;
+        } catch (java.time.format.DateTimeParseException e) {
+            JOptionPane.showMessageDialog(this, "La fecha ingresada no existe en el calendario.");
             return;
         }
-        if (anioNum < 2026) {
-            JOptionPane.showMessageDialog(this, "El año debe ser 2026 o posterior");
+
+        // 3. Validaciones de selección
+        if (cmbHorario.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un horario.");
             return;
         }
-    } catch (NumberFormatException e) {
-        JOptionPane.showMessageDialog(this, "La fecha debe contener solo números");
-        return;
-    }
-    
-    if (cmbHorario.getSelectedIndex() == 0) {
-        JOptionPane.showMessageDialog(this, "Debe seleccionar un horario");
-        return;
-    }
-    
-    if (cmbMedico.getSelectedIndex() == 0) {
-        JOptionPane.showMessageDialog(this, "Debe seleccionar un médico");
-        return;
-    }
-    
-    if (txtMotivo.getText().trim().isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Debe ingresar el motivo de la consulta");
-        return;
-    }
-    
+        if (cmbMedico.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar un médico.");
+            return;
+        }
+        if (txtMotivo.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Debe ingresar el motivo de la consulta.");
+            return;
+        }
 
-    String idCita = "C" + String.format("%03d", misCitas.getTamaño()+ 100);
-    String fechaStr = String.format("%02d/%02d/%s", Integer.parseInt(dia), Integer.parseInt(mes), anio);
-    String hora = cmbHorario.getSelectedItem().toString();
-    
+        // 4. Extracción de Nombre y Correo del Médico
+        String medicoSeleccionado = cmbMedico.getSelectedItem().toString();
+        String nombreMedico = medicoSeleccionado.split(" - ")[0];
+        String correoMedico = medicoSeleccionado.split(" - ")[1];
 
-    String medicoCompleto = cmbMedico.getSelectedItem().toString();
-    
-    String[] medicoPartes = medicoCompleto.split("\\|");
-    String nombreMedico = medicoPartes[0].trim(); 
-    
-    String motivo = txtMotivo.getText().trim();
-    
-    Cita nuevaCita = new Cita(idCita, fechaStr, hora, nombreMedico, motivo, "Agendada");
-    misCitas.agregar(nuevaCita);
-    
-    guardarCitaEnCSV(idCita, idPaciente, nombrePaciente, fechaStr, hora, medicoCompleto, motivo, "Agendada");
-    
-    DefaultTableModel modelo = (DefaultTableModel) tablaMisCitas.getModel();
-    modelo.addRow(new Object[]{
-        idCita, fechaStr, hora, nombreMedico, motivo, "Agendada"
-    });
-    
+        String hora = cmbHorario.getSelectedItem().toString();
+        String motivo = txtMotivo.getText().trim();
 
-    JOptionPane.showMessageDialog(this, 
-        "Cita agendada exitosamente\n\n" +
-        "ID: " + idCita + "\n" +
-        "Fecha: " + fechaStr + "\n" +
-        "Hora: " + hora + "\n" +
-        "Médico: " + nombreMedico,
-        "Cita Agendada", JOptionPane.INFORMATION_MESSAGE);
-    
+        // 5. ALGORITMO O(N) PARA SINCRONIZACIÓN PERFECTA DEL ID
+        String idCita = "C100";
+        java.io.File archivoCitas = new java.io.File("citas.csv");
 
-    limpiarFormulario();
-    tabpPaciente.setSelectedIndex(1);    
+        if (archivoCitas.exists()) {
+            try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(archivoCitas))) {
+                String linea, ultimaLinea = "";
+                br.readLine(); // Saltar cabecera
+
+                while ((linea = br.readLine()) != null) {
+                    if (!linea.trim().isEmpty()) {
+                        ultimaLinea = linea;
+                    }
+                }
+
+                // Calculamos el siguiente ID basado en el último registro global
+                if (!ultimaLinea.isEmpty()) {
+                    String[] datosUltima = ultimaLinea.split(",");
+                    if (datosUltima.length > 0 && datosUltima[0].startsWith("C")) {
+                        int ultimoIdNum = Integer.parseInt(datosUltima[0].substring(1).trim());
+                        idCita = "C" + (ultimoIdNum + 1);
+                    }
+                }
+            } catch (Exception e) {}
+        }
+
+        // 6. Escritura Directa para Unificar Formato de 9 Columnas
+        try (java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter(archivoCitas, true))) {
+            // ID, CorreoP, NombreP, Fecha, Hora, NombreM, CorreoM, Motivo, Estado
+            pw.println(String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s",
+                idCita, this.idPaciente, this.nombrePaciente, fechaGenerada, hora, 
+                nombreMedico, correoMedico, motivo, "Agendada"));
+
+            // Actualizar estructuras locales en memoria
+            Cita nuevaCita = new Cita(idCita, fechaGenerada, hora, nombreMedico, motivo, "Agendada");
+            misCitas.agregar(nuevaCita);
+
+            DefaultTableModel modelo = (DefaultTableModel) tablaMisCitas.getModel();
+            modelo.addRow(new Object[]{ idCita, fechaGenerada, hora, nombreMedico, motivo, "Agendada" });
+
+            JOptionPane.showMessageDialog(this, 
+                "Cita agendada exitosamente\n\nID: " + idCita + "\nFecha: " + fechaGenerada + "\nHora: " + hora + "\nMédico: " + nombreMedico,
+                "Cita Agendada", JOptionPane.INFORMATION_MESSAGE);
+
+            limpiarFormulario();
+            tabpPaciente.setSelectedIndex(1);    
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error crítico de escritura: " + e.getMessage());
+        } 
     }//GEN-LAST:event_btnAgendarCitaActionPerformed
 
     private void btnLimpiarFormularioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarFormularioActionPerformed
@@ -809,6 +802,7 @@ public class frmPaciente extends javax.swing.JFrame {
     private javax.swing.JButton btnLimpiarFormulario;
     private javax.swing.JButton btnReprogramar;
     private javax.swing.JComboBox<String> cbMedicamento;
+    private javax.swing.JComboBox<String> cbMes;
     private javax.swing.JComboBox<String> cmbHorario;
     private javax.swing.JComboBox<String> cmbMedico;
     private javax.swing.JLabel lBienvenidaP;
@@ -833,7 +827,6 @@ public class frmPaciente extends javax.swing.JFrame {
     private javax.swing.JTextField txtAnio;
     private javax.swing.JTextField txtCantidad;
     private javax.swing.JTextField txtDia;
-    private javax.swing.JTextField txtMes;
     private javax.swing.JTextArea txtMotivo;
     // End of variables declaration//GEN-END:variables
 

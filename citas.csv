@@ -1,4 +1,4 @@
 ID_CITA,ID_PACIENTE,NOMBRE_PACIENTE,FECHA,HORA,NOMBRE_MEDICO,ID_MEDICO,MOTIVO,ESTADO
-C100,e.cordova_paciente@gestionmedica.gob.ec,E cordova,24/06/2026,08:00 - 09:00,Dr. Erick Paez,e.paez,Dolor severo de estomago,Atendida
-C100,m.chavez_paciente@gestionmedica.gob.ec,M chavez,25/06/2026,11:00 - 12:00,Dr. Erick Paez,e.paez,Dolor de cabeza (Cefalea),Atendida
-C100,m.chavez_paciente@gestionmedica.gob.ec,M chavez,25/08/2026,09:00 - 10:00,Dr. Estefano Diaz,e.diaz,Fractura en la pierna,Agendada
+C100,e.chavez_paciente@gestionmedica.gob.ec,E chavez,2026-07-24,10:00 - 11:00,Dr. E chavez,e.chavez_doctor@gestionmedica.gob.ec,Dolor de cabeza,Agendada
+C101,e.chavez_paciente@gestionmedica.gob.ec,E chavez,2027-01-31,10:00 - 11:00,Dr. E chavez,e.chavez_doctor@gestionmedica.gob.ec,Cita rutinaria,Atendida
+C102,e.chavez_paciente@gestionmedica.gob.ec,E chavez,2026-07-25,09:00 - 10:00,Dr. E chavez,e.chavez_doctor@gestionmedica.gob.ec,Dolor severo de cabeza,Agendada

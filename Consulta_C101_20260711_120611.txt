@@ -1,0 +1,27 @@
+═══════════════════════════════════════════════════════════
+              REGISTRO DE CONSULTA MÉDICA
+═══════════════════════════════════════════════════════════
+
+ID CITA: C101
+PACIENTE: E chavez
+FECHA DE REGISTRO: 11/07/2026 12:06:11
+
+───────────────────────────────────────────────────────────
+INFORMACIÓN CLÍNICA
+───────────────────────────────────────────────────────────
+
+GRAVEDAD: Grave
+
+DIAGNÓSTICO:
+Completamente Sano
+
+TRATAMIENTO:
+Ninguno
+
+DURACIÓN DEL TRATAMIENTO: 1 días
+
+No se prescribieron medicamentos.
+
+═══════════════════════════════════════════════════════════
+           Fin del Registro de Consulta
+═══════════════════════════════════════════════════════════

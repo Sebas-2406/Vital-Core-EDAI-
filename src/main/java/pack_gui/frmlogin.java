@@ -51,7 +51,6 @@ public class frmlogin extends javax.swing.JFrame {
         pContrasena = new javax.swing.JPasswordField();
         pEncabezadoLogin = new javax.swing.JPanel();
         lLogin = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Login-Vital Core");
@@ -114,9 +113,6 @@ public class frmlogin extends javax.swing.JFrame {
                 .addGap(17, 17, 17))
         );
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/pack_gui/images/VITAL-CORE (1)4peq.png"))); // NOI18N
-        jLabel1.setMinimumSize(new java.awt.Dimension(298, 348));
-
         javax.swing.GroupLayout pFondoLoginLayout = new javax.swing.GroupLayout(pFondoLogin);
         pFondoLogin.setLayout(pFondoLoginLayout);
         pFondoLoginLayout.setHorizontalGroup(
@@ -141,18 +137,12 @@ public class frmlogin extends javax.swing.JFrame {
                     .addComponent(bCrearCuenta)
                     .addComponent(bIniciarsesion))
                 .addGap(116, 116, 116))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pFondoLoginLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(121, 121, 121))
         );
         pFondoLoginLayout.setVerticalGroup(
             pFondoLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pFondoLoginLayout.createSequentialGroup()
                 .addComponent(pEncabezadoLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                 .addGroup(pFondoLoginLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lUsuario)
                     .addComponent(tUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -230,11 +220,15 @@ public class frmlogin extends javax.swing.JFrame {
         switch (typeUser) {
             case "admin":
                 JOptionPane.showMessageDialog(this, "Bienvenido, Administrador.");
-                // Nueva instancia del Admin Selector y uso del parametro de la lista de usuarios listaEnlazada de usuarios
+                
                 frmAdminSelector selector = new frmAdminSelector(listaUsuarios);
+                
+                selector.inicializarListaPacientes();
+                
                 selector.setVisible(true);
                 selector.setLocationRelativeTo(null);
-                this.dispose(); // Cierre del login
+                
+                this.dispose();
                 break;
             case "doctor":
                 JOptionPane.showMessageDialog(this, "Bienvenido, Doctor. Sus consultas del día están listas.");
@@ -348,7 +342,6 @@ public class frmlogin extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bCrearCuenta;
     private javax.swing.JButton bIniciarsesion;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lLogin;
     private javax.swing.JLabel lUsuario;
     private javax.swing.JLabel lcontrasena;
