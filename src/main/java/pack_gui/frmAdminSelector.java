@@ -555,16 +555,16 @@ public class frmAdminSelector extends javax.swing.JFrame {
             return -1; 
         }
 
-        // Calcular el punto medio
+        // Calculo del punto medio
         int medio = inicio + (fin - inicio) / 2;
         String actual = arregloPacientes.get(medio).toLowerCase();
 
-        // CASO DE ÉXITO: Coincidencia encontrada
+        // Caso Base: Coincidencia encontrada
         if (actual.contains(objetivo)) {
             return medio;
         }
 
-        // CASO RECURSIVO
+        // Caso Recursivo
         if (actual.compareTo(objetivo) < 0) {
             return busquedaBinariaRecursiva(objetivo, medio + 1, fin);
         } else {
@@ -579,15 +579,17 @@ public class frmAdminSelector extends javax.swing.JFrame {
         arregloPacientes.clear();
 
         java.io.File archivo = new java.io.File("usuarios.csv");
-        if (!archivo.exists()) return;
+        if (!archivo.exists()) return;//Apertura del archivo CSV
 
         try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(archivo))) {
             String linea;
             br.readLine(); 
-
+            //Lectura de cada línea del documento
             while ((linea = br.readLine()) != null) {
+                //Separacion de datos por comas
                 String[] datos = linea.split(",");
                 if (datos.length >= 1) {
+                    //Extracción del correo
                     String correo = datos[0].trim();
 
                     if (correo.contains("_paciente@")) {
@@ -617,35 +619,36 @@ public class frmAdminSelector extends javax.swing.JFrame {
     
     private void cargarMedicamentos() {
         cbMedAgregar.removeAllItems();
-    cbMedQuitar.removeAllItems();
-    
-    cbMedAgregar.addItem("Nuevo medicamento...");
-    
-    java.io.File archivo = new java.io.File("inventario.csv");
-        if (!archivo.exists()) return;
+        cbMedQuitar.removeAllItems();
 
-        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(archivo))) {
-            String linea;
+        cbMedAgregar.addItem("Nuevo medicamento...");
 
-            while ((linea = br.readLine()) != null) {
-                String[] partes = linea.split(",");
-                if (partes.length >= 2) {
-                    String nombreMedicamento = partes[0].trim();
+        java.io.File archivo = new java.io.File("inventario.csv");
+            if (!archivo.exists()) return;//Apertura del archivo CSV
 
-                    // Validación para saltar la cabecera
-                    if (nombreMedicamento.equalsIgnoreCase("MEDICAMENTO") || 
-                        nombreMedicamento.equalsIgnoreCase("MEDICINA")) {
-                        continue; 
+            try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(archivo))) {
+                String linea;//Lectura de cada línea del archivo
+
+                while ((linea = br.readLine()) != null) {
+                    //Separación de datos por comas
+                    String[] partes = linea.split(",");
+                    if (partes.length >= 2) {
+                        String nombreMedicamento = partes[0].trim();
+
+                        // Validación para saltar la cabecera
+                        if (nombreMedicamento.equalsIgnoreCase("MEDICAMENTO") || 
+                            nombreMedicamento.equalsIgnoreCase("MEDICINA")) {
+                            continue; 
+                        }
+
+                        cbMedAgregar.addItem(nombreMedicamento);
+                        cbMedQuitar.addItem(nombreMedicamento);
                     }
-
-                    cbMedAgregar.addItem(nombreMedicamento);
-                    cbMedQuitar.addItem(nombreMedicamento);
                 }
-            }
-        } catch (Exception e) {}
+            } catch (Exception e) {}
 
-        // Sincronización la tabla visual
-        cargarTablaInventario();
+            // Sincronización la tabla visual
+            cargarTablaInventario();
     }
     
     private void cargarTablaInventario() {
@@ -660,14 +663,14 @@ public class frmAdminSelector extends javax.swing.JFrame {
             boolean primeraLinea = true;
 
             while ((linea = br.readLine()) != null) {
-                // Omitir la primera línea si dice "MEDICINA,STOCK"
+                // Omisión la primera línea si dice "MEDICINA,STOCK"
                 if (primeraLinea && linea.toUpperCase().contains("STOCK")) {
                     primeraLinea = false;
                     continue;
                 }
                 primeraLinea = false;
 
-                // Extraer y colocar en la tabla
+                // Extracción y ubicación en la tabla
                 String[] partes = linea.split(",");
                 if (partes.length >= 2) {
                     // partes[0] es el Nombre, partes[1] es la Cantidad
@@ -680,7 +683,6 @@ public class frmAdminSelector extends javax.swing.JFrame {
     }
 
     private void btnBuscarPacienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPacienteActionPerformed
-        // TODO add your handling code here:
         // Texto escrito en el buscador
         String objetivo = txtBusquedaPaciente.getText().trim().toLowerCase();
     
@@ -703,10 +705,12 @@ public class frmAdminSelector extends javax.swing.JFrame {
         String hora = (String) cbHora.getSelectedItem(); 
         String motivo = txtMotivo.getText().trim();
 
+        //Extracción de datos
         String diaStr = txtDia.getText().trim();
         String mesStr = cbMes.getSelectedItem().toString(); 
         String anioStr = txtAnio.getText().trim();
-
+        
+        //En caso de no haber llenado todos los campos
         if (seleccionPaciente == null || seleccionMedico == null || motivo.isEmpty() || 
             diaStr.isEmpty() || anioStr.isEmpty() || hora == null) {
             javax.swing.JOptionPane.showMessageDialog(this, "Por favor, complete todos los campos requeridos.");
@@ -725,15 +729,18 @@ public class frmAdminSelector extends javax.swing.JFrame {
             int a = Integer.parseInt(anioStr);
             fechaGenerada = String.format("%04d-%02d-%02d", a, m, d);
 
+            //Uso de LocalDate para comparar fechas con isBefore()
             if (java.time.LocalDate.parse(fechaGenerada).isBefore(java.time.LocalDate.now())) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Error: No agende citas en el pasado.");
                 return;
             }
         } catch (Exception e) {
+            //Formato de fecha inválida
             javax.swing.JOptionPane.showMessageDialog(this, "Fecha inválida.");
             return;
         }
 
+        //Inicio de primer ID (Formato)
         String idCita = "C100";
         java.io.File archivoCitas = new java.io.File("citas.csv");
 
@@ -745,14 +752,14 @@ public class frmAdminSelector extends javax.swing.JFrame {
                     if (!linea.trim().isEmpty()) ultimaLinea = linea;
                 }
                 if (!ultimaLinea.isEmpty() && ultimaLinea.split(",")[0].startsWith("C")) {
+                    //Establecimiento del ID correspondiente
                     idCita = "C" + (Integer.parseInt(ultimaLinea.split(",")[0].substring(1).trim()) + 1);
                 }
             } catch (Exception e) {}
         }
 
         try (java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter(archivoCitas, true))) {
-            pw.println(String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s", 
-                    idCita, correoPaciente, nombrePaciente, fechaGenerada, hora, nombreMedico, correoMedico, motivo, "Agendada"));
+            pw.println(String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s", idCita, correoPaciente, nombrePaciente, fechaGenerada, hora, nombreMedico, correoMedico, motivo, "Agendada"));
 
             javax.swing.JOptionPane.showMessageDialog(this, "Cita agendada. ID: " + idCita);
             txtDia.setText(""); txtAnio.setText(""); txtMotivo.setText("");
@@ -760,8 +767,9 @@ public class frmAdminSelector extends javax.swing.JFrame {
         } catch (Exception e) {}
     }//GEN-LAST:event_btnAgendarCitaActionPerformed
 
+    //Método para usar la busqueda binaria recursiva, sin la necesidad de pasar siempre los mismos argumentos
     private int busquedaBinariaEDA(String objetivo) {
-        // Llama a la función recursiva pasándole los límites iniciales del arreglo
+        // Llamada a la función recursiva pasándole los límites iniciales del arreglo
         return busquedaBinariaRecursiva(objetivo, 0, arregloPacientes.size() - 1);
     }
     
@@ -833,8 +841,11 @@ public class frmAdminSelector extends javax.swing.JFrame {
     private void btnAgregarMedicamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarMedicamentoActionPerformed
         // TODO add your handling code here:
         Object seleccion = cbMedAgregar.getSelectedItem();
-        if (seleccion == null) return;
+        if (seleccion == null) {
+            return;
+        }
 
+        //extracción de la medicina a agregar
         String medAgregar = seleccion.toString().trim();
 
         if (medAgregar.equals("Nuevo medicamento...")) {
@@ -851,6 +862,7 @@ public class frmAdminSelector extends javax.swing.JFrame {
             medAgregar = medAgregar.substring(0, 1).toUpperCase() + medAgregar.substring(1).toLowerCase();
         }
 
+        //Extracción de la cantidad a agregar
         String cantStr = txtStockMedAgregar.getText().trim();
 
         if (cantStr.isEmpty()) {
@@ -876,6 +888,7 @@ public class frmAdminSelector extends javax.swing.JFrame {
             while ((linea = br.readLine()) != null) {
                 String[] partes = linea.split(",");
                 if (partes.length >= 2) {
+                    //En caso de que el medicamento ya exista
                     if (partes[0].equalsIgnoreCase(medAgregar)) {
                         int stockActual = Integer.parseInt(partes[1].trim());
                         lineasActualizadas.add(partes[0] + "," + (stockActual + cantidadNueva));
@@ -906,10 +919,11 @@ public class frmAdminSelector extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAgregarMedicamentoActionPerformed
 
     private void btnQuitarMedicamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitarMedicamentoActionPerformed
-        // TODO add your handling code here:
         Object seleccion = cbMedQuitar.getSelectedItem();
-        if (seleccion == null) return;
-
+        if (seleccion == null) {
+            return;
+        }
+        //Extracción de medicamento a quitar y su cantidad
         String medQuitar = seleccion.toString().trim();
         String cantStr = txtCantidadQuitar.getText().trim();
 
@@ -933,9 +947,11 @@ public class frmAdminSelector extends javax.swing.JFrame {
         boolean existe = false;
         int stockActual = 0;
 
+        //Manejo del archivo CSV
         try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(archivo))) {
             String linea;
             while ((linea = br.readLine()) != null) {
+                //División de los datos por comas
                 String[] partes = linea.split(",");
                 if (partes.length >= 2) {
                     if (partes[0].equalsIgnoreCase(medQuitar)) {
@@ -965,6 +981,7 @@ public class frmAdminSelector extends javax.swing.JFrame {
             return;
         }
 
+        //Limpieza de todo el archivo
         try (java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter(archivo))) {
             for (String l : lineasActualizadas) {
                 pw.println(l);
