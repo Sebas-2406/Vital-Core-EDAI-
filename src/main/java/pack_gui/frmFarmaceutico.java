@@ -299,6 +299,7 @@ public class frmFarmaceutico extends javax.swing.JFrame {
         }
 
         try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(archivo))) {
+            // Se usa la lista enlazada propia para leer el inventario
             pack_estructuras.ListaEnlazada<String[]> filasInv = new pack_estructuras.ListaEnlazada<>();
             String linea = br.readLine(); // Saltar encabezado
 
@@ -318,7 +319,7 @@ public class frmFarmaceutico extends javax.swing.JFrame {
             javax.swing.JOptionPane.showMessageDialog(this, "Error al leer inventario: " + e.getMessage());
         }
     }
-    
+
     private void bDespacharMedicinaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDespacharMedicinaActionPerformed
         String nombreMedicina = javax.swing.JOptionPane.showInputDialog(this, 
             "Ingrese el nombre de la medicina:", "Despachar Medicina", 
@@ -345,6 +346,7 @@ public class frmFarmaceutico extends javax.swing.JFrame {
         java.io.File archivo = new java.io.File("inventario.csv");
         
         // --- USO DE TU LISTA ENLAZADA EN LUGAR DE MAP/HASHMAP ---
+        // Se recorre el inventario buscando si la medicina ya existe
         pack_estructuras.ListaEnlazada<String[]> inventario = new pack_estructuras.ListaEnlazada<>();
         boolean medicinaEncontrada = false;
 
