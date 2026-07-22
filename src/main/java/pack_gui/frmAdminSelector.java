@@ -10,7 +10,9 @@ package pack_gui;
 public class frmAdminSelector extends javax.swing.JFrame {
     
     // 1. AGREGA ESTA VARIABLE GLOBAL
+    // Lista enlazada con todos los usuarios del sistema, se recibe desde el login
     private pack_estructuras.ListaEnlazada<pack_logica.Usuario> listaUsuarios;
+    // Arreglo con solo los pacientes, ordenado alfabéticamente para poder usar búsqueda binaria
     private java.util.ArrayList<String> arregloPacientes = new java.util.ArrayList<>();
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frmAdminSelector.class.getName());
 
@@ -548,14 +550,17 @@ public class frmAdminSelector extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    //Metodo de busqueda binaria con arreglo ordenado Previamente
+    // Busca un paciente por nombre usando búsqueda binaria
+    // El arreglo tiene que estar ordenado alfabéticamente para que esto funcione
     private int busquedaBinariaRecursiva(String objetivo, int inicio, int fin) {
         // CASO BASE
+        // Si ya no queda nada por revisar, es que el paciente no está
         if (inicio > fin) {
             return -1; 
         }
 
         // Calculo del punto medio
+        // Se calcula la posición del medio para dividir la búsqueda en dos mitades
         int medio = inicio + (fin - inicio) / 2;
         String actual = arregloPacientes.get(medio).toLowerCase();
 
@@ -565,6 +570,8 @@ public class frmAdminSelector extends javax.swing.JFrame {
         }
 
         // Caso Recursivo
+        // Si el nombre del medio va antes alfabéticamente, seguimos buscando en la mitad de arriba
+        // si no, seguimos buscando en la mitad de abajo
         if (actual.compareTo(objetivo) < 0) {
             return busquedaBinariaRecursiva(objetivo, medio + 1, fin);
         } else {
@@ -572,7 +579,8 @@ public class frmAdminSelector extends javax.swing.JFrame {
         }
     }
     
-    // Carga inicial y ordenamiento nativo de apoyo para la Búsqueda Binaria
+    // Carga los usuarios desde el csv, separa pacientes de doctores
+    // y ordena la lista de pacientes para que la búsqueda binaria funcione bien
     public void inicializarListaPacientes() {
         cbPacientes.removeAllItems();
         cbMedicos.removeAllItems();
@@ -699,6 +707,7 @@ public class frmAdminSelector extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnBuscarPacienteActionPerformed
 
+    // Se arma la fecha con el formato año-mes-día y se valida que no sea anterior a hoy
     private void btnAgendarCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgendarCitaActionPerformed
         String seleccionPaciente = (String) cbPacientes.getSelectedItem();
         String seleccionMedico = (String) cbMedicos.getSelectedItem();
@@ -838,6 +847,8 @@ public class frmAdminSelector extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnConsultarHistorialActionPerformed
 
+    // Si el medicamento ya existe en el inventario se le suma el stock nuevo
+    // si no existe se crea una fila nueva en el archivo
     private void btnAgregarMedicamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarMedicamentoActionPerformed
         // TODO add your handling code here:
         Object seleccion = cbMedAgregar.getSelectedItem();
@@ -918,6 +929,8 @@ public class frmAdminSelector extends javax.swing.JFrame {
         cargarMedicamentos();
     }//GEN-LAST:event_btnAgregarMedicamentoActionPerformed
 
+    // Antes de restar del inventario se valida que exista el medicamento
+    // y que haya stock suficiente para no dejar cantidades negativas
     private void btnQuitarMedicamentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnQuitarMedicamentoActionPerformed
         Object seleccion = cbMedQuitar.getSelectedItem();
         if (seleccion == null) {
