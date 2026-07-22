@@ -202,7 +202,8 @@ public class frmMedico extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
+
+    // Merge sort: ordena las citas por fecha y hora
     public pack_logica.Cita[] ordenarCitasMergeSort(pack_logica.Cita[] arreglo) {
         if (arreglo.length <= 1) {
             return arreglo; // Caso base: un arreglo de 1 o 0 elementos ya está ordenado
@@ -220,7 +221,8 @@ public class frmMedico extends javax.swing.JFrame {
         // Union de ambas mitades
         return merge(izquierda, derecha);
     }
-    
+
+    // Une las dos mitades ya ordenadas en una sola
     private pack_logica.Cita[] merge(pack_logica.Cita[] izquierda, pack_logica.Cita[] derecha) {
         pack_logica.Cita[] resultado = new pack_logica.Cita[izquierda.length + derecha.length];
         int i = 0, j = 0, k = 0;
@@ -238,7 +240,8 @@ public class frmMedico extends javax.swing.JFrame {
 
         return resultado;
     }
-    
+
+    // Compara primero por fecha, si empatan compara por hora
     private boolean criterioCronologico(pack_logica.Cita c1, pack_logica.Cita c2) {
         // Comparación de las fechas
         int comparacionFecha = c1.getFecha().compareTo(c2.getFecha());
@@ -284,6 +287,7 @@ public class frmMedico extends javax.swing.JFrame {
         java.io.File archivo = new java.io.File("citas.csv");
         if (!archivo.exists()) return;
 
+        // Se separan las citas del doctor segun su estado
         java.util.ArrayList<pack_logica.Cita> listaTemporalAgendadas = new java.util.ArrayList<>();
         java.util.ArrayList<pack_logica.Cita> listaTemporalAtendidas = new java.util.ArrayList<>();
 
@@ -324,6 +328,7 @@ public class frmMedico extends javax.swing.JFrame {
             System.err.println("Error al cargar citas: " + e.getMessage());
         }
 
+        // Las agendadas se ordenan antes de mostrarlas
         pack_logica.Cita[] arregloDesordenado = listaTemporalAgendadas.toArray(new pack_logica.Cita[0]);
         pack_logica.Cita[] arregloOrdenado = ordenarCitasMergeSort(arregloDesordenado);
 
@@ -395,6 +400,7 @@ public class frmMedico extends javax.swing.JFrame {
         String idCita = (String) tablaCitasAgendadas.getValueAt(fila, 0);
         String paciente = (String) tablaCitasAgendadas.getValueAt(fila, 3);
 
+        // Se abre la ventana de atencion y se espera a que cierre
         frmAtenderCita ventana = new frmAtenderCita(idCita, paciente);
         ventana.setVisible(true);
         ventana.setLocationRelativeTo(this);
@@ -404,6 +410,7 @@ public class frmMedico extends javax.swing.JFrame {
             @Override
             //Metodo de manipulación entre ambas ventanas
             public void windowClosed(java.awt.event.WindowEvent e) {
+                // Solo se mueve la cita si realmente se atendio
                 if (ventana.isCitaAtendida()) {
                     Object[] datosCita = new Object[6];
                     for (int i = 0; i < 6; i++) {
