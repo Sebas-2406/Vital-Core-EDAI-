@@ -74,7 +74,7 @@ public class frmPaciente extends javax.swing.JFrame {
         DefaultTableModel modelo = (DefaultTableModel) tablaMisCitas.getModel();
         modelo.setRowCount(0); // Limpieza de la tabla previo a la visualización
 
-        //Se establece la pila
+        //Se establece la pila para mostrar las citas de la mas reciente a la mas antigua
         pack_estructuras.Pila<Cita> historialPila = new pack_estructuras.Pila<>();
         
         //Apertura del archivo CSV
@@ -214,6 +214,7 @@ public class frmPaciente extends javax.swing.JFrame {
             
             //Apertura del archivo y creacion de un hash map solo para almacenar el medicamento y el stock
             File archivo = new File("inventario.csv");
+            // Aqui si se usa un HashMap en vez de la lista enlazada propia
             Map<String, Integer> inventario = new LinkedHashMap<>();
             boolean exito = false;
 
@@ -605,7 +606,7 @@ public class frmPaciente extends javax.swing.JFrame {
         String hora = cmbHorario.getSelectedItem().toString();
         String motivo = txtMotivo.getText().trim();
 
-        // 5. ALGORITMO O(N) PARA SINCRONIZACIÓN PERFECTA DEL ID
+        // Busca el ultimo id de cita para generar el siguiente
         String idCita = "C100";
         java.io.File archivoCitas = new java.io.File("citas.csv");
 
@@ -671,6 +672,7 @@ public class frmPaciente extends javax.swing.JFrame {
     }
     
     String estado = (String) tablaMisCitas.getValueAt(fila, 5);
+        // Solo se puede cancelar si sigue agendada
     if (!estado.equals("Agendada")) {
         JOptionPane.showMessageDialog(this, "Solo puede cancelar citas agendadas");
         return;
@@ -733,7 +735,8 @@ public class frmPaciente extends javax.swing.JFrame {
     private void txtCantidadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCantidadActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtCantidadActionPerformed
-    
+
+    // Reescribe el CSV cambiando solo el estado de esa cita
     private void actualizarEstadoCitaEnCSV(String idCita, String nuevoEstado) {
         java.io.File archivo = new java.io.File("citas.csv");
         if (!archivo.exists()) return;
