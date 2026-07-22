@@ -30,7 +30,12 @@ public class frmAtenderCita extends javax.swing.JFrame {
 
     private String idCita;
     private String nombrePaciente;
+    
+    // Pila donde se van guardando los medicamentos que el doctor agrega en la consulta
+    // sirve para poder deshacer el ultimo ingreso si el doctor se equivoca
     private Pila<String[]> medicinas; 
+    
+    // Esta bandera le avisa a la ventana del doctor si la cita realmente se atendio o se cancelo
     private boolean citaAtendida = false; 
     private String estadoCita = "";
 
@@ -46,7 +51,9 @@ public class frmAtenderCita extends javax.swing.JFrame {
         lIdCita.setText("ID Cita: " + idCita);
         lPaciente.setText("Paciente: " + nombrePaciente);
     }
-    
+
+    // Genera un archivo de texto con el resumen completo de la consulta
+    // el nombre del archivo lleva la fecha y hora para que no se sobrescriba con otro
     private void generarArchivoConsulta() {
     try {
         String nombreArchivo = String.format("Consulta_%s_%s.txt", 
@@ -360,6 +367,7 @@ public class frmAtenderCita extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    // Si el doctor no va a recetar nada, se bloquean los campos de medicamento
     private void chkRecetaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkRecetaActionPerformed
         // TODO add your handling code here:
     boolean habilitado = chkReceta.isSelected();
@@ -370,6 +378,7 @@ public class frmAtenderCita extends javax.swing.JFrame {
     btnDeshacerUltimoIngreso.setEnabled(habilitado);
     }//GEN-LAST:event_chkRecetaActionPerformed
 
+    // La dosis tiene que ser un numero valido y mayor o igual a 1
     private void btnAgregarMedicinaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarMedicinaActionPerformed
         // TODO add your handling code here:
     String medicamento = txtMedicamento.getText().trim();
@@ -402,6 +411,7 @@ public class frmAtenderCita extends javax.swing.JFrame {
     }
     
     String[] nuevaMedicina = {medicamento, dosis, indicaciones};
+    // Se guarda el medicamento en la pila y tambien en la tabla que se ve en pantalla
     medicinas.apilar(nuevaMedicina);
     
     javax.swing.table.DefaultTableModel modelo = 
@@ -418,6 +428,7 @@ public class frmAtenderCita extends javax.swing.JFrame {
     
     }//GEN-LAST:event_btnAgregarMedicinaActionPerformed
 
+    // Como es una pila, siempre se elimina el ultimo medicamento agregado, nunca uno al azar
     private void btnDeshacerUltimoIngresoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeshacerUltimoIngresoActionPerformed
         // TODO add your handling code here:
         //Validar si la pila de medicinas está vacía
@@ -455,6 +466,8 @@ public class frmAtenderCita extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_btnNoSePresentoActionPerformed
 
+    // Cada medicamento recetado se guarda en recetas.csv como Pendiente
+    // asi despues el farmaceutico lo puede ver y despachar
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         // TODO add your handling code here:
     if (txtDiagnostico.getText().trim().isEmpty()) {
@@ -494,7 +507,8 @@ public class frmAtenderCita extends javax.swing.JFrame {
                        .append(" (").append(indic).append(")\n");
             }
         }
-        
+
+        // Se marca la cita como atendida antes de generar el archivo y cerrar la ventana
         citaAtendida = true;
         estadoCita = "Atendida";
         
@@ -510,6 +524,7 @@ public class frmAtenderCita extends javax.swing.JFrame {
    
     }//GEN-LAST:event_btnGuardarActionPerformed
 
+    // Estos dos metodos los usa frmMedico para saber que paso con la cita despues de cerrar esta ventana
     public boolean isCitaAtendida() {
         return citaAtendida;
     }
