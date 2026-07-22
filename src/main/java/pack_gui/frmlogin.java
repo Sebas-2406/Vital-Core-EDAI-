@@ -23,6 +23,7 @@ public class frmlogin extends javax.swing.JFrame {
     
     private ListaEnlazada<Usuario> listaUsuarios = new ListaEnlazada<>();
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(frmlogin.class.getName());
+    // Clave fija usada para encriptar las contraseñas
     private static final String HIDEN_KEY = "2406200611012026";
 
     /**
@@ -185,6 +186,7 @@ public class frmlogin extends javax.swing.JFrame {
 
     private void bIniciarsesionMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bIniciarsesionMouseClicked
         String user = tUsuario.getText().trim().toLowerCase();
+        // Se encripta lo escrito para compararlo con la contraseña guardada
         String pass = encriptar(new String(pContrasena.getPassword()));
         
 
@@ -205,7 +207,8 @@ public class frmlogin extends javax.swing.JFrame {
         
         String typeUser = "";
         String nombreUsuario = "";
-        
+
+        // El tipo de usuario y el nombre se sacan del propio correo
         if (user.contains("_")) {
             int posicionInicio = user.lastIndexOf("_") + 1;
             int posicionFin = user.indexOf("@");
@@ -217,6 +220,7 @@ public class frmlogin extends javax.swing.JFrame {
             nombreUsuario = nombreUsuario.substring(0, 1).toUpperCase() + nombreUsuario.substring(1);
         }
 
+        // Segun el rol se abre la ventana correspondiente
         switch (typeUser) {
             case "admin":
                 JOptionPane.showMessageDialog(this, "Bienvenido, Administrador.");
@@ -294,7 +298,8 @@ public class frmlogin extends javax.swing.JFrame {
             return null;
         }
     }
-    
+
+    // Carga todos los usuarios del csv a la lista enlazada
     private void cargarDatosCSV() {
         File archivo = new File("usuarios.csv");
         if (!archivo.exists()) return;
