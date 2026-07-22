@@ -243,14 +243,18 @@ public class frmMedico extends javax.swing.JFrame {
 
     // Compara primero por fecha, si empatan compara por hora
     private boolean criterioCronologico(pack_logica.Cita c1, pack_logica.Cita c2) {
-        // Comparación de las fechas
-        int comparacionFecha = c1.getFecha().compareTo(c2.getFecha());
+        //Comparación por prioridad (Orden descendente: los 3 van antes que los 1)
+        if (c1.getPrioridad() != c2.getPrioridad()) {
+            return c1.getPrioridad() > c2.getPrioridad(); // Retorna true si c1 es más grave que c2
+        }
 
+        //Si tienen la misma prioridad, desempatamos usando tu lógica de fechas original
+        int comparacionFecha = c1.getFecha().compareTo(c2.getFecha());
         if (comparacionFecha != 0) {
             return comparacionFecha < 0; // Retorna true si c1 es anterior a c2
         }
 
-        //Si son exactamente el mismo día, el que tenga la hora más temprana va primero
+        //Si son exactamente el mismo día y misma prioridad, desempata por hora
         return c1.getHora().compareTo(c2.getHora()) < 0;
     }
     
@@ -298,7 +302,7 @@ public class frmMedico extends javax.swing.JFrame {
                 if (linea.trim().isEmpty()) continue;
                 String[] datos = linea.split(",");
 
-                // Formato exacto de 9 columnas
+                // Formato exacto de 9 columnas originales
                 if (datos.length >= 9) {
                     String idCita = datos[0];
                     String nombrePaciente = datos[2]; 
@@ -309,12 +313,22 @@ public class frmMedico extends javax.swing.JFrame {
                     String motivo = datos[7];
                     String estado = datos[8];
 
+                    //Lectura por prioridad
+                    int prioridad = 1; // Prioridad por defecto si no existe
+                    if (datos.length >= 10) {
+                        try {
+                            prioridad = Integer.parseInt(datos[9].trim());
+                        } catch (NumberFormatException e) { }
+                    }
 
                     if (nombreMedicoCSV.equals(this.nombreMedico) || 
                         idMedicoCSV.equals(this.idMedico) || 
                         this.idMedico.equals("default")) {
 
+                        // Usas nombrePaciente en el parámetro medico de tu constructor
                         pack_logica.Cita nuevaCita = new pack_logica.Cita(idCita, fecha, hora, nombrePaciente, motivo, estado);
+                        // --- CAMBIO: Se setea la prioridad en tu objeto ---
+                        nuevaCita.setPrioridad(prioridad);
 
                         if (estado.equals("Agendada")) {
                             listaTemporalAgendadas.add(nuevaCita);
@@ -328,16 +342,31 @@ public class frmMedico extends javax.swing.JFrame {
             System.err.println("Error al cargar citas: " + e.getMessage());
         }
 
-        // Las agendadas se ordenan antes de mostrarlas
+        // Las agendadas se ordenan antes de mostrarlas usando el MergeSort (ahora evalúa prioridad)
         pack_logica.Cita[] arregloDesordenado = listaTemporalAgendadas.toArray(new pack_logica.Cita[0]);
         pack_logica.Cita[] arregloOrdenado = ordenarCitasMergeSort(arregloDesordenado);
 
         for (pack_logica.Cita c : arregloOrdenado) {
-            Object[] fila = {c.getIdCita(), c.getFecha(), c.getHora(), c.getMedico(), c.getMotivo(), c.getEstado()};
+            
+            // Convertimos la prioridad a un texto fácil de leer
+            String textoGravedad = "";
+            switch(c.getPrioridad()) {
+                case 3: textoGravedad = "3-Grave"; break;
+                case 2: textoGravedad = "2-Media"; break;
+                case 1: textoGravedad = "1-Baja"; break;
+                default: textoGravedad = String.valueOf(c.getPrioridad());
+            }
+            
+            // Añadimos el texto al estado para que no tengas que crear una columna extra en tu JTable
+            String estadoFinal = c.getEstado() + " (" + textoGravedad + ")";
+
+            // Usando c.getMedico() exactamente como lo diseñaste
+            Object[] fila = {c.getIdCita(), c.getFecha(), c.getHora(), c.getMedico(), c.getMotivo(), estadoFinal};
             modeloAgendadas.addRow(fila);
         }
 
         for (pack_logica.Cita c : listaTemporalAtendidas) {
+            // Usando c.getMedico() exactamente como lo diseñaste
             Object[] fila = {c.getIdCita(), c.getFecha(), c.getHora(), c.getMedico(), c.getMotivo(), c.getEstado()};
             modeloAtendidas.addRow(fila);
         }

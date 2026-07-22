@@ -7,6 +7,7 @@ public class Cita {
     protected String medico;
     protected String motivo;
     protected String estado;
+    private int prioridad; // Ejemplo: 3 Urgencia Alta, 2 = Media, 1 = Baja
 
         //Constructor para establecer los datos dados como atributos
     public Cita(String idCita, String fecha, String hora, String medico, String motivo, String estado) {
@@ -26,4 +27,8 @@ public class Cita {
         public String getMotivo() { return motivo; }
         public String getEstado() { return estado; }
         public void setEstado(String estado) { this.estado = estado; }
-        }
+        public int getPrioridad() {return prioridad;}
+        public void setPrioridad(int prioridad) {this.prioridad = prioridad;
+    }
+}
+        

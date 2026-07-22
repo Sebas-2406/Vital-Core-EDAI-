@@ -56,6 +56,9 @@ public class frmAdminSelector extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
+        cbxPrioridad = new javax.swing.JComboBox<>();
+        jLabel13 = new javax.swing.JLabel();
+        btnCambiarPrioridad = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         txtBuscarHistorial = new javax.swing.JTextField();
         btnConsultarHistorial = new javax.swing.JButton();
@@ -140,10 +143,33 @@ public class frmAdminSelector extends javax.swing.JFrame {
 
         jLabel12.setText("Motivo de la consulta");
 
+        cbxPrioridad.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3" }));
+        cbxPrioridad.addActionListener(this::cbxPrioridadActionPerformed);
+
+        jLabel13.setText("Prioridad");
+
+        btnCambiarPrioridad.setText("Cambiar Prioridad");
+        btnCambiarPrioridad.addActionListener(this::btnCambiarPrioridadActionPerformed);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(txtBusquedaPaciente, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnBuscarPaciente))
+                    .addComponent(jLabel9))
+                .addGap(58, 58, 58)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel13)
+                    .addComponent(cbxPrioridad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(44, 44, 44)
+                .addComponent(btnCambiarPrioridad)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(19, 19, 19)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -167,26 +193,25 @@ public class frmAdminSelector extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(btnAgendarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel9)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(txtBusquedaPaciente, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnBuscarPaciente)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtBusquedaPaciente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscarPaciente))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel9)
+                            .addComponent(jLabel13))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtBusquedaPaciente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnBuscarPaciente)
+                            .addComponent(cbxPrioridad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(btnCambiarPrioridad)
+                        .addGap(16, 16, 16)))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(cbPacientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -542,9 +567,9 @@ public class frmAdminSelector extends javax.swing.JFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(33, 33, 33)
                 .addComponent(btnVolver)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(9, Short.MAX_VALUE))
         );
 
         pack();
@@ -713,11 +738,14 @@ public class frmAdminSelector extends javax.swing.JFrame {
         String seleccionMedico = (String) cbMedicos.getSelectedItem();
         String hora = (String) cbHora.getSelectedItem(); 
         String motivo = txtMotivo.getText().trim();
+        
 
         //Extracción de datos
         String diaStr = txtDia.getText().trim();
         String mesStr = cbMes.getSelectedItem().toString(); 
         String anioStr = txtAnio.getText().trim();
+        // Parseo de la prioridad (Se corrigió la falta de paréntesis en toString())
+        int nivelPrioridad = Integer.parseInt(cbxPrioridad.getSelectedItem().toString()); 
         
         //En caso de no haber llenado todos los campos
         if (seleccionPaciente == null || seleccionMedico == null || motivo.isEmpty() || 
@@ -768,7 +796,9 @@ public class frmAdminSelector extends javax.swing.JFrame {
         }
 
         try (java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter(archivoCitas, true))) {
-            pw.println(String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s", idCita, correoPaciente, nombrePaciente, fechaGenerada, hora, nombreMedico, correoMedico, motivo, "Agendada"));
+            // CAMBIO: Se añadió %d al final del formato de cadena y la variable nivelPrioridad 
+            // para guardar la prioridad como la última columna en el archivo CSV.
+            pw.println(String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%d", idCita, correoPaciente, nombrePaciente, fechaGenerada, hora, nombreMedico, correoMedico, motivo, "Agendada", nivelPrioridad));
 
             javax.swing.JOptionPane.showMessageDialog(this, "Cita agendada. ID: " + idCita);
             txtDia.setText(""); txtAnio.setText(""); txtMotivo.setText("");
@@ -1030,6 +1060,90 @@ public class frmAdminSelector extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnVolverActionPerformed
 
+    private void cbxPrioridadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbxPrioridadActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbxPrioridadActionPerformed
+
+    private void btnCambiarPrioridadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCambiarPrioridadActionPerformed
+       // 1. Pedir el ID de la Cita al Administrador
+        String idCita = javax.swing.JOptionPane.showInputDialog(this, "Ingrese el ID de la cita a modificar (Ej: C105):");
+        if (idCita == null || idCita.trim().isEmpty()) return;
+
+        // 2. Desplegar menú de opciones limitadas a las prioridades definidas (1, 2, 3)
+        String[] opciones = {"3", "2", "1"}; 
+        String nuevaPrioridad = (String) javax.swing.JOptionPane.showInputDialog(this,
+                "Seleccione el nivel de prioridad (3 = Máxima, 1 = Mínima):", "Sistema de Triage",
+                javax.swing.JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
+
+        if (nuevaPrioridad == null) return;
+
+        java.io.File archivo = new java.io.File("citas.csv");
+        java.util.ArrayList<String> buffer = new java.util.ArrayList<>();
+        boolean encontrada = false;
+
+        // 3. LECTURA Y ACTUALIZACIÓN EN MEMORIA (Buffer)
+        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(archivo))) {
+            String linea;
+            
+            // Tratar el encabezado primero
+            if ((linea = br.readLine()) != null) {
+                // Si el encabezado no tiene la columna 10, se la agregamos visualmente
+                String[] headers = linea.split(",");
+                if (headers.length == 9) {
+                    buffer.add(linea + ",PRIORIDAD");
+                } else {
+                    buffer.add(linea);
+                }
+            }
+
+            // Recorrer el resto de las citas
+            while ((linea = br.readLine()) != null) {
+                if (linea.trim().isEmpty()) continue;
+                String[] datos = linea.split(",");
+                
+                // Asegurarnos de que la fila tiene al menos los 9 datos base
+                if (datos.length >= 9) {
+                    
+                    // Si encontramos la cita y su estado original es exactamente "Agendada"
+                    if (datos[0].equalsIgnoreCase(idCita.trim()) && datos[8].trim().equals("Agendada")) {
+                        
+                        encontrada = true;
+
+                        // Tomamos desde datos[0] hasta datos[8] tal cual estaban.
+                        // Y agregamos 'nuevaPrioridad' obligatoriamente como el décimo elemento (Columna J).
+                        String lineaLimpia = datos[0] + "," + datos[1] + "," + datos[2] + "," + 
+                                             datos[3] + "," + datos[4] + "," + datos[5] + "," + 
+                                             datos[6] + "," + datos[7] + "," + datos[8] + "," + nuevaPrioridad;
+                        
+                        buffer.add(lineaLimpia);
+                    } else {
+                        // Si no es la cita buscada, guardamos la línea tal cual estaba
+                        buffer.add(linea); 
+                    }
+                } else {
+                    buffer.add(linea);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (!encontrada) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Cita no encontrada o ya no está en estado 'Agendada'.");
+            return;
+        }
+
+        // 4. REESCRITURA TOTAL DEL ARCHIVO
+        try (java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter(archivo))) {
+            for (String l : buffer) {
+                pw.println(l);
+            }
+            javax.swing.JOptionPane.showMessageDialog(this, "Prioridad asignada exitosamente");
+        } catch (Exception e) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Error al guardar los cambios");
+        }
+    }//GEN-LAST:event_btnCambiarPrioridadActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1059,6 +1173,7 @@ public class frmAdminSelector extends javax.swing.JFrame {
     private javax.swing.JButton btnAgendarCita;
     private javax.swing.JButton btnAgregarMedicamento;
     private javax.swing.JButton btnBuscarPaciente;
+    private javax.swing.JButton btnCambiarPrioridad;
     private javax.swing.JButton btnConsultarHistorial;
     private javax.swing.JButton btnQuitarMedicamento;
     private javax.swing.JButton btnVolver;
@@ -1068,10 +1183,12 @@ public class frmAdminSelector extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cbMedicos;
     private javax.swing.JComboBox<String> cbMes;
     private javax.swing.JComboBox<String> cbPacientes;
+    private javax.swing.JComboBox<String> cbxPrioridad;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
